@@ -1997,17 +1997,28 @@
 
       <div class="settings-body">
         
-        <!-- Section A: Watermark Captions & Labels -->
+        <!-- Section A: Watermark Captions & Date Format -->
         <div class="settings-group">
           <div class="settings-group-title">
-            <span>Watermark Fields & Labels</span>
-            <span style="font-size: 0.70rem; color: var(--text-muted);">Conota Display Style</span>
+            <span>Watermark Fields & Formats</span>
+            <span style="font-size: 0.70rem; color: var(--text-muted);">Conota Exact Style</span>
+          </div>
+
+          <div class="toggle-row">
+            <div class="toggle-label">
+              <span class="toggle-label-main">Date & Time Format</span>
+              <span class="toggle-label-sub">Choose 24h dots (Sample style) or 12h AM/PM</span>
+            </div>
+            <select id="settingDateFormat" onchange="updateSettingsFromUI()" style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; padding: 6px 10px; font-size: 0.80rem; outline: none;">
+              <option value="dots24">19.11.2026 12:14 (Sample 24h)</option>
+              <option value="slashes12">19/11/2026 12:14 PM (12h AM/PM)</option>
+            </select>
           </div>
 
           <div class="toggle-row">
             <div class="toggle-label">
               <span class="toggle-label-main">Watermark Captions (Labels)</span>
-              <span class="toggle-label-sub">Show "Project:", "Markaz:", "Notes:" prefix markers</span>
+              <span class="toggle-label-sub">Show "Project:", "Markaz:", "Notes:" prefixes</span>
             </div>
             <label class="switch">
               <input type="checkbox" id="settingShowLabels" onchange="updateSettingsFromUI()">
@@ -2074,13 +2085,13 @@
         <div class="settings-group">
           <div class="settings-group-title">
             <span>Dark Backing Container</span>
-            <span style="font-size: 0.70rem; color: var(--text-muted);">Conota Translucent Backing</span>
+            <span style="font-size: 0.70rem; color: var(--text-muted);">Exact Match (No Border Line)</span>
           </div>
 
           <div class="toggle-row">
             <div class="toggle-label">
-              <span class="toggle-label-main">Grey Background</span>
-              <span class="toggle-label-sub">Dark rounded backing container behind watermark text</span>
+              <span class="toggle-label-main">Grey Background Box</span>
+              <span class="toggle-label-sub">Clean translucent backing behind watermark text</span>
             </div>
             <label class="switch">
               <input type="checkbox" id="settingShowBg" checked onchange="updateSettingsFromUI()">
@@ -2088,16 +2099,27 @@
             </label>
           </div>
 
+          <div class="toggle-row">
+            <div class="toggle-label">
+              <span class="toggle-label-main">Box Border Line</span>
+              <span class="toggle-label-sub">Off by default to match clean sample photo style</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="settingShowBorder" onchange="updateSettingsFromUI()">
+              <span class="slider-round"></span>
+            </label>
+          </div>
+
           <div class="slider-control-wrap" id="opacityControlWrap">
             <div class="slider-header">
               <span>Grey Background Transparency</span>
-              <span class="slider-val-badge" id="opacityBadge">3 of 5 (~50%)</span>
+              <span class="slider-val-badge" id="opacityBadge">3 of 5 (~45%)</span>
             </div>
             <input type="range" id="settingBgOpacity" min="1" max="5" step="1" value="3" oninput="updateSettingsFromUI()">
             <div style="display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--text-muted);">
-              <span>1 (Nearly Opaque 85%)</span>
-              <span>3 (Conota 50%)</span>
-              <span>5 (Mostly Transparent 22%)</span>
+              <span>1 (Dark 80%)</span>
+              <span>3 (Sample 45%)</span>
+              <span>5 (Light 18%)</span>
             </div>
           </div>
         </div>
@@ -2410,23 +2432,23 @@
       ctx.fillStyle = '#1e293b';
       ctx.font = 'bold 44px -apple-system, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('GOVT. PRIMARY SCHOOL - TEHSIL KHUSHAB', 960, 260);
+      ctx.fillText('GOVT. HIGH SCHOOL TALOKAR - TEHSIL KHUSHAB', 960, 260);
 
       const img = new Image();
       img.onload = () => {
         setImageSource(img, 1920, 1080);
-        if (!state.projectName) {
-          state.projectName = "38210008 - GPS DHOK CHAPRI";
-          elements.inputProject.value = state.projectName;
-        }
-        if (!state.markaz) {
-          state.markaz = "JAUHARABAD NORTH (MALE)";
-          elements.inputMarkaz.value = state.markaz;
-        }
-        if (!state.note) {
-          state.note = "";
-          elements.inputNote.value = state.note;
-        }
+        state.projectName = "Hafiz Muhammad Asim";
+        state.markaz = "Markaz Katha Saghral East";
+        state.lat = 32.47288;
+        state.lon = 72.48892;
+        state.note = "";
+
+        elements.inputProject.value = state.projectName;
+        elements.inputMarkaz.value = state.markaz;
+        elements.inputLat.value = state.lat;
+        elements.inputLon.value = state.lon;
+        elements.inputNote.value = "";
+
         redrawPreview();
       };
       img.src = sampleCanvas.toDataURL('image/jpeg', 0.95);
@@ -2582,16 +2604,17 @@
       // Proportional font sizing: 1 to 10 scaling between 1.2% and 3.5% of minDim
       const fontRatio = 0.012 + ((settings.fontSizeLevel - 1) / 9) * (0.035 - 0.012);
       const fontSize = Math.max(12, Math.round(minDim * fontRatio));
-      const lineHeight = Math.round(fontSize * 1.28);
-      const padX = Math.round(minDim * 0.022);
-      const padY = Math.round(minDim * 0.018);
-      const marginX = Math.round(minDim * 0.030);
-      const marginY = Math.round(minDim * 0.030);
-      const maxAllowedWidth = Math.round(w * 0.52); // Strict 45-55% width limit
-      const borderRadius = Math.max(4, Math.round(minDim * 0.007));
+      const lineHeight = Math.round(fontSize * 1.30);
+      const padX = Math.round(minDim * 0.018);
+      const padY = Math.round(minDim * 0.014);
+      const marginX = Math.round(minDim * 0.016);
+      const marginY = Math.round(minDim * 0.016);
+      const maxAllowedWidth = Math.round(w * 0.55);
+      const borderRadius = Math.max(2, Math.round(minDim * 0.005));
 
       ctx.save();
-      ctx.font = `600 ${fontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif`;
+      const fontWeight = settings.fontWeight || '400';
+      ctx.font = `${fontWeight} ${fontSize}px Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif`;
 
       // Gather lines following settings.fieldOrder
       const rawItems = [];
@@ -2644,7 +2667,7 @@
 
       // Wrap each field strictly within maxAllowedWidth
       const allWrappedLines = [];
-      const maxTextContentWidth = Math.max(100, maxAllowedWidth - (padX * 2));
+      const maxTextContentWidth = Math.max(80, maxAllowedWidth - (padX * 2));
       for (const item of rawItems) {
         const wrapped = wrapText(ctx, item, maxTextContentWidth);
         allWrappedLines.push(...wrapped);
@@ -2684,28 +2707,31 @@
           break;
       }
 
-      // Draw dark semi-transparent grey backing container if enabled
+      // Draw dark semi-transparent grey backing container - BORDERLESS by default
       if (settings.showBg) {
-        const opacities = [0.85, 0.68, 0.50, 0.36, 0.22];
-        const alpha = opacities[settings.bgOpacityLevel - 1] ?? 0.50;
-        ctx.fillStyle = `rgba(20, 20, 22, ${alpha})`;
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
-        ctx.lineWidth = Math.max(1, Math.round(minDim * 0.001));
-
+        const opacities = [0.80, 0.60, 0.45, 0.30, 0.18];
+        const alpha = opacities[settings.bgOpacityLevel - 1] ?? 0.45;
+        ctx.fillStyle = `rgba(0, 0, 0, ${alpha})`;
         drawRoundedRect(ctx, boxX, boxY, boxWidth, boxHeight, borderRadius);
         ctx.fill();
-        ctx.stroke();
+
+        // No extra clue borderline unless user explicitly toggles it
+        if (settings.showBorder) {
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+          ctx.lineWidth = Math.max(1, Math.round(minDim * 0.001));
+          ctx.stroke();
+        }
       }
 
-      // Render crisp text
+      // Render crisp text matching sample font & style
       ctx.fillStyle = settings.fontColor || '#ffffff';
       ctx.textAlign = 'left';
       ctx.textBaseline = 'top';
 
-      // Subtle drop shadow for crisp readability
-      ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
-      ctx.shadowBlur = Math.round(fontSize * 0.22);
-      ctx.shadowOffsetX = 1;
+      // Soft shadow for contrast on bright photos
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.45)';
+      ctx.shadowBlur = Math.round(fontSize * 0.15);
+      ctx.shadowOffsetX = 0;
       ctx.shadowOffsetY = 1;
 
       for (let i = 0; i < allWrappedLines.length; i++) {
@@ -2721,52 +2747,49 @@
      * TEMPLATE 2: Field Box
      */
     function drawTemplate2FieldBox(ctx, w, h, scale, dateText, timeText, coords, address, note) {
-      const margin = 26 * scale;
-      const pad = 18 * scale;
-      const rowGap = 26 * scale;
-      const labelFont = `bold ${13 * scale}px monospace`;
-      const valFont = `600 ${15 * scale}px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`;
+      const minDim = Math.min(w, h);
+      const margin = Math.round(minDim * 0.02);
+      const pad = Math.round(minDim * 0.018);
+      const fontSize = Math.max(13, Math.round(minDim * 0.021));
+      const rowGap = Math.round(fontSize * 1.5);
+      const labelFont = `600 ${Math.round(fontSize * 0.85)}px monospace`;
+      const valFont = `500 ${fontSize}px Roboto, -apple-system, sans-serif`;
 
-      const rows = [
-        { label: 'DATE', val: dateText },
-        { label: 'TIME', val: timeText },
-        { label: 'COORDINATES', val: coords }
-      ];
-      if (address) rows.push({ label: 'LOCATION', val: address });
+      const rows = [];
+      if (state.projectName) rows.push({ label: 'PROJECT', val: state.projectName });
+      if (state.markaz) rows.push({ label: 'MARKAZ', val: state.markaz });
+      rows.push({ label: 'TIME', val: formatConotaDateTime(state.date, state.time) });
+      rows.push({ label: 'GPS', val: coords });
       if (note) rows.push({ label: 'NOTE', val: note });
 
-      const cardWidth = Math.min(w * 0.72, 540 * scale);
+      const cardWidth = Math.min(w * 0.65, 500 * (minDim / 1000));
       const cardHeight = (pad * 2) + (rows.length * rowGap);
       const cardX = margin;
       const cardY = h - cardHeight - margin;
 
       ctx.save();
-      ctx.fillStyle = 'rgba(15, 23, 42, 0.90)';
-      ctx.strokeStyle = '#38bdf8';
-      ctx.lineWidth = 2 * scale;
-
-      drawRoundedRect(ctx, cardX, cardY, cardWidth, cardHeight, 10 * scale);
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.70)';
+      drawRoundedRect(ctx, cardX, cardY, cardWidth, cardHeight, 6);
       ctx.fill();
-      ctx.stroke();
 
+      // Sleek left accent indicator
       ctx.fillStyle = '#38bdf8';
-      ctx.fillRect(cardX, cardY, 6 * scale, cardHeight);
+      drawRoundedRect(ctx, cardX, cardY, 4, cardHeight, 2);
+      ctx.fill();
 
       ctx.textAlign = 'left';
       ctx.textBaseline = 'middle';
 
       rows.forEach((r, idx) => {
         const curY = cardY + pad + (idx * rowGap) + (rowGap * 0.4);
-
         ctx.font = labelFont;
-        ctx.fillStyle = '#94a3b8';
-        ctx.fillText(r.label + ':', cardX + pad + (8 * scale), curY);
+        ctx.fillStyle = '#38bdf8';
+        ctx.fillText(r.label, cardX + pad + 6, curY);
 
         ctx.font = valFont;
-        ctx.fillStyle = r.label === 'NOTE' ? '#38bdf8' : '#ffffff';
-
-        const labelWidth = 115 * scale;
-        const maxValWidth = cardWidth - (pad * 2) - labelWidth - (8 * scale);
+        ctx.fillStyle = '#ffffff';
+        const labelWidth = Math.round(fontSize * 3.8);
+        const maxValWidth = cardWidth - (pad * 2) - labelWidth - 8;
         let displayVal = r.val;
         while (ctx.measureText(displayVal).width > maxValWidth && displayVal.length > 8) {
           displayVal = displayVal.slice(0, -4) + '...';
@@ -2781,42 +2804,36 @@
      * TEMPLATE 3: Minimal Corner
      */
     function drawTemplate3MinimalCorner(ctx, w, h, scale, dateText, timeText, coords, address, note) {
-      const margin = 28 * scale;
-      const fontSize = 18 * scale;
-      const lineHeight = 28 * scale;
+      const minDim = Math.min(w, h);
+      const margin = Math.round(minDim * 0.02);
+      const fontSize = Math.max(12, Math.round(minDim * 0.022));
+      const lineHeight = Math.round(fontSize * 1.35);
 
-      const lines = [
-        `${dateText}  ${timeText}`,
-        coords
-      ];
-      if (address) lines.push(address);
+      const lines = [];
+      if (state.projectName) lines.push(state.projectName);
+      if (state.markaz) lines.push(state.markaz);
+      lines.push(formatConotaDateTime(state.date, state.time));
+      lines.push(coords);
       if (note) lines.push(note);
 
       ctx.save();
-      ctx.textAlign = 'right';
-      ctx.textBaseline = 'bottom';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
 
-      ctx.shadowColor = 'rgba(0, 0, 0, 0.95)';
-      ctx.shadowBlur = 8 * scale;
-      ctx.shadowOffsetX = 2 * scale;
-      ctx.shadowOffsetY = 2 * scale;
+      // Drop shadow for legibility without any background box
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+      ctx.shadowBlur = Math.round(fontSize * 0.35);
+      ctx.shadowOffsetX = 1;
+      ctx.shadowOffsetY = 1;
 
-      lines.reverse().forEach((line, idx) => {
-        const y = h - margin - (idx * lineHeight);
-        if (idx === lines.length - 1) {
-          ctx.font = `bold ${fontSize * 1.3}px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`;
-          ctx.fillStyle = '#ffffff';
-        } else {
-          ctx.font = `600 ${fontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`;
-          ctx.fillStyle = idx === 0 && note ? '#38bdf8' : '#f8fafc';
-        }
+      const totalHeight = lines.length * lineHeight;
+      const startY = h - margin - totalHeight;
 
-        const maxWidth = w * 0.75;
-        let displayLine = line;
-        while (ctx.measureText(displayLine).width > maxWidth && displayLine.length > 8) {
-          displayLine = displayLine.slice(0, -4) + '...';
-        }
-        ctx.fillText(displayLine, w - margin, y);
+      lines.forEach((line, idx) => {
+        const y = startY + (idx * lineHeight);
+        ctx.font = `500 ${fontSize}px Roboto, -apple-system, sans-serif`;
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText(line, margin, y);
       });
 
       ctx.restore();
@@ -2826,64 +2843,59 @@
      * TEMPLATE 4: Top & Bottom Split
      */
     function drawTemplate4Split(ctx, w, h, scale, dateText, timeText, coords, address, note) {
-      const margin = 22 * scale;
-      const pad = 12 * scale;
+      const minDim = Math.min(w, h);
+      const margin = Math.round(minDim * 0.018);
+      const pad = Math.round(minDim * 0.012);
+      const fontSize = Math.max(12, Math.round(minDim * 0.020));
 
       ctx.save();
 
-      const topFont = `bold ${18 * scale}px -apple-system, BlinkMacSystemFont, sans-serif`;
-      ctx.font = topFont;
-      const timeStr = `📅 ${dateText}  •  ⏰ ${timeText}`;
+      // Top right timestamp pill
+      const timeStr = formatConotaDateTime(state.date, state.time);
+      ctx.font = `500 ${fontSize}px Roboto, -apple-system, sans-serif`;
       const topWidth = ctx.measureText(timeStr).width + (pad * 2.5);
-      const topHeight = 38 * scale;
+      const topHeight = Math.round(fontSize * 1.8);
       const topX = w - margin - topWidth;
       const topY = margin;
 
-      ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-      ctx.lineWidth = 1.5 * scale;
-      drawRoundedRect(ctx, topX, topY, topWidth, topHeight, 19 * scale);
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.50)';
+      drawRoundedRect(ctx, topX, topY, topWidth, topHeight, 4);
       ctx.fill();
-      ctx.stroke();
 
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillStyle = '#ffffff';
       ctx.fillText(timeStr, topX + (topWidth / 2), topY + (topHeight / 2));
 
-      const botLines = [
-        `📍 ${coords}`
-      ];
-      if (address) botLines.push(`🏫 ${address}`);
-      if (note) botLines.push(`📝 ${note}`);
+      // Bottom left location info
+      const botLines = [];
+      if (state.projectName) botLines.push(state.projectName);
+      if (state.markaz) botLines.push(state.markaz);
+      botLines.push(coords);
+      if (note) botLines.push(note);
 
-      const botLineHeight = 26 * scale;
+      const botLineHeight = Math.round(fontSize * 1.30);
       const botHeight = (pad * 2) + (botLines.length * botLineHeight);
-      const botWidth = Math.min(w * 0.75, 580 * scale);
+      let maxLineWidth = 0;
+      botLines.forEach(l => {
+        const lw = ctx.measureText(l).width;
+        if (lw > maxLineWidth) maxLineWidth = lw;
+      });
+      const botWidth = Math.min(w * 0.65, maxLineWidth + (pad * 2));
       const botX = margin;
       const botY = h - margin - botHeight;
 
-      ctx.fillStyle = 'rgba(15, 23, 42, 0.90)';
-      ctx.strokeStyle = '#38bdf8';
-      ctx.lineWidth = 2 * scale;
-      drawRoundedRect(ctx, botX, botY, botWidth, botHeight, 10 * scale);
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.50)';
+      drawRoundedRect(ctx, botX, botY, botWidth, botHeight, 4);
       ctx.fill();
-      ctx.stroke();
 
       ctx.textAlign = 'left';
       ctx.textBaseline = 'top';
 
       botLines.forEach((line, idx) => {
         const curY = botY + pad + (idx * botLineHeight);
-        ctx.font = idx === botLines.length - 1 && note ? `italic 600 ${15 * scale}px sans-serif` : `500 ${16 * scale}px sans-serif`;
-        ctx.fillStyle = idx === botLines.length - 1 && note ? '#38bdf8' : '#f8fafc';
-
-        const maxLineWidth = botWidth - (pad * 2);
-        let displayLine = line;
-        while (ctx.measureText(displayLine).width > maxLineWidth && displayLine.length > 8) {
-          displayLine = displayLine.slice(0, -4) + '...';
-        }
-        ctx.fillText(displayLine, botX + pad, curY);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText(line, botX + pad, curY);
       });
 
       ctx.restore();
@@ -2893,43 +2905,32 @@
      * TEMPLATE 5: Classic Digital (Retro Amber Monospace)
      */
     function drawTemplate5ClassicDigital(ctx, w, h, scale, dateText, timeText, coords, address, note) {
-      const margin = 26 * scale;
-      const monoFontLarge = `bold ${30 * scale}px "Courier New", Courier, monospace`;
-      const monoFontSmall = `bold ${16 * scale}px "Courier New", Courier, monospace`;
-      const lineHeight = 32 * scale;
+      const minDim = Math.min(w, h);
+      const margin = Math.round(minDim * 0.02);
+      const fontSize = Math.max(13, Math.round(minDim * 0.024));
+      const lineHeight = Math.round(fontSize * 1.35);
 
-      const dateParts = dateText.split('-');
-      const retroDate = dateParts.length === 3 ? `'${dateParts[0].slice(-2)} ${dateParts[1]} ${dateParts[2]}` : dateText;
-      const retroTimestamp = `${retroDate}  ${timeText}`;
-
-      const lines = [
-        { text: retroTimestamp, large: true },
-        { text: coords, large: false }
-      ];
-      if (address) lines.push({ text: address.toUpperCase(), large: false });
-      if (note) lines.push({ text: `[ ${note.toUpperCase()} ]`, large: false });
+      const lines = [];
+      if (state.projectName) lines.push(state.projectName);
+      if (state.markaz) lines.push(state.markaz);
+      lines.push(formatConotaDateTime(state.date, state.time));
+      lines.push(coords);
+      if (note) lines.push(note);
 
       ctx.save();
       ctx.textAlign = 'right';
       ctx.textBaseline = 'bottom';
 
       ctx.shadowColor = '#000000';
-      ctx.shadowBlur = 10 * scale;
-      ctx.shadowOffsetX = 3 * scale;
-      ctx.shadowOffsetY = 3 * scale;
+      ctx.shadowBlur = 8;
+      ctx.shadowOffsetX = 2;
+      ctx.shadowOffsetY = 2;
 
-      lines.reverse().forEach((item, idx) => {
+      lines.reverse().forEach((text, idx) => {
         const y = h - margin - (idx * lineHeight);
-        ctx.font = item.large ? monoFontLarge : monoFontSmall;
-        ctx.fillStyle = item.large ? '#ffb703' : '#fb8500';
-
-        const maxWidth = w * 0.8;
-        let displayLine = item.text;
-        while (ctx.measureText(displayLine).width > maxWidth && displayLine.length > 6) {
-          displayLine = displayLine.slice(0, -3) + '..';
-        }
-
-        ctx.fillText(displayLine, w - margin, y);
+        ctx.font = `600 ${fontSize}px "Courier New", Courier, monospace`;
+        ctx.fillStyle = idx === 0 ? '#ffb703' : '#fef08a';
+        ctx.fillText(text, w - margin, y);
       });
 
       ctx.restore();
@@ -2967,13 +2968,19 @@
       const s = state.settings;
       elements.settingShowLabels.checked = !!s.showLabels;
       elements.settingCoordsPrefix.checked = !!s.coordsPrefix;
+      if (document.getElementById('settingDateFormat')) {
+        document.getElementById('settingDateFormat').value = s.dateFormat || 'dots24';
+      }
+      if (document.getElementById('settingShowBorder')) {
+        document.getElementById('settingShowBorder').checked = !!s.showBorder;
+      }
       elements.settingFontSize.value = s.fontSizeLevel;
       elements.fontSizeBadge.textContent = `Level ${s.fontSizeLevel} (${(0.012 + ((s.fontSizeLevel - 1) / 9) * 0.023 * 100).toFixed(1)}%)`;
 
       elements.settingShowBg.checked = !!s.showBg;
       elements.opacityControlWrap.style.display = s.showBg ? 'flex' : 'none';
       elements.settingBgOpacity.value = s.bgOpacityLevel;
-      const opacityNames = ['1: 85% Dark', '2: 68%', '3: 50% Conota', '4: 36%', '5: 22% Light'];
+      const opacityNames = ['1: 80% Dark', '2: 60%', '3: 45% Sample', '4: 30%', '5: 18% Light'];
       elements.opacityBadge.textContent = opacityNames[s.bgOpacityLevel - 1] || '3 of 5';
 
       elements.settingQuality.value = s.jpegQuality;
@@ -3015,6 +3022,12 @@
       const s = state.settings;
       s.showLabels = elements.settingShowLabels.checked;
       s.coordsPrefix = elements.settingCoordsPrefix.checked;
+      if (document.getElementById('settingDateFormat')) {
+        s.dateFormat = document.getElementById('settingDateFormat').value;
+      }
+      if (document.getElementById('settingShowBorder')) {
+        s.showBorder = document.getElementById('settingShowBorder').checked;
+      }
       s.fontSizeLevel = parseInt(elements.settingFontSize.value, 10);
       s.showBg = elements.settingShowBg.checked;
       s.bgOpacityLevel = parseInt(elements.settingBgOpacity.value, 10);
@@ -3022,7 +3035,7 @@
 
       elements.opacityControlWrap.style.display = s.showBg ? 'flex' : 'none';
       elements.fontSizeBadge.textContent = `Level ${s.fontSizeLevel} (${(0.012 + ((s.fontSizeLevel - 1) / 9) * 0.023 * 100).toFixed(1)}%)`;
-      const opacityNames = ['1: 85% Dark', '2: 68%', '3: 50% Conota', '4: 36%', '5: 22% Light'];
+      const opacityNames = ['1: 80% Dark', '2: 60%', '3: 45% Sample', '4: 30%', '5: 18% Light'];
       elements.opacityBadge.textContent = opacityNames[s.bgOpacityLevel - 1] || '3 of 5';
       elements.qualityBadge.textContent = `${s.jpegQuality}% (${s.jpegQuality >= 90 ? 'High Quality' : 'Compressed'})`;
 
