@@ -1595,8 +1595,8 @@
             <span class="status-pill-badge" id="dateTimeBadge">Auto Ready</span>
           </div>
           <div style="display: flex; align-items: center; gap: 6px;">
-            <button type="button" class="btn-action-pill" id="btnToggleTimeFormat" onclick="toggleTimeFormat()" title="Toggle between Conota dots (19.11.2026) and 12h AM/PM">
-              <span id="timeFormatLabel">24h Dots</span>
+            <button type="button" class="btn-action-pill" id="btnToggleTimeFormat" onclick="toggleTimeFormat()" title="Toggle between 24h and 12h (DD/MM/YYYY)">
+              <span id="timeFormatLabel">24h</span>
             </button>
             <button type="button" class="btn-action-pill highlight" id="btnAutoDateTime" onclick="syncAutoDateTime(true)" title="Sync current date & time from device">
               <svg class="icon" style="width: 13px; height: 13px;" viewBox="0 0 24 24">
@@ -1608,8 +1608,8 @@
         </div>
 
         <div class="input-group">
-          <label for="inputDate">Date</label>
-          <input type="date" id="inputDate" oninput="onDataChanged()">
+          <label for="inputDate">Date (DD/MM/YYYY)</label>
+          <input type="text" id="inputDate" placeholder="DD/MM/YYYY" oninput="onDataChanged()">
         </div>
         <div class="input-group">
           <label for="inputTime">Time</label>
@@ -2134,6 +2134,14 @@
           elements.selectedSchoolBadge.style.display = 'flex';
 
           showToast(`🎯 School auto-detected within ${nearby.distance}m: ${nearby.school.name}`);
+        } else {
+          // Leave fields blank when manual coords are not within school radius
+          state.selectedSchool = null;
+          state.projectName = '';
+          state.markaz = '';
+          elements.inputProject.value = '';
+          elements.inputMarkaz.value = '';
+          elements.selectedSchoolBadge.style.display = 'none';
         }
       }
 
@@ -2244,6 +2252,16 @@
       state.originalWidth = 0;
       state.originalHeight = 0;
 
+      // Reset fields to blank when photo is removed
+      state.selectedSchool = null;
+      state.projectName = '';
+      state.markaz = '';
+      elements.inputProject.value = '';
+      elements.inputMarkaz.value = '';
+      if (elements.selectedSchoolBadge) elements.selectedSchoolBadge.style.display = 'none';
+      if (elements.schoolSearchInput) elements.schoolSearchInput.value = '';
+      if (elements.btnClearSearch) elements.btnClearSearch.style.display = 'none';
+
       elements.previewCanvas.style.display = 'none';
       elements.emptyState.style.display = 'flex';
       elements.changePhotoBar.style.display = 'none';
@@ -2257,7 +2275,8 @@
       elements.fileInput.value = '';
       elements.cameraInput.value = '';
 
-      showToast('Photo removed');
+      redrawPreview();
+      showToast('Photo removed (fields blank)');
     }
 
     function loadSavedPreferences() {
@@ -2268,17 +2287,13 @@
           highlightActiveTemplate(state.currentTemplate);
         }
 
-        const savedProject = localStorage.getItem('photo_stamp_project');
-        if (savedProject !== null && savedProject !== '') {
-          state.projectName = savedProject;
-          elements.inputProject.value = savedProject;
-        }
-
-        const savedMarkaz = localStorage.getItem('photo_stamp_markaz');
-        if (savedMarkaz !== null && savedMarkaz !== '') {
-          state.markaz = savedMarkaz;
-          elements.inputMarkaz.value = savedMarkaz;
-        }
+        // Purge stored project/markaz to ensure fields start completely blank!
+        localStorage.removeItem('photo_stamp_project');
+        localStorage.removeItem('photo_stamp_markaz');
+        state.projectName = '';
+        state.markaz = '';
+        if (elements.inputProject) elements.inputProject.value = '';
+        if (elements.inputMarkaz) elements.inputMarkaz.value = '';
 
         const savedNote = localStorage.getItem('photo_stamp_note');
         if (savedNote !== null && savedNote !== '') {
@@ -2290,6 +2305,9 @@
         if (savedTimeFmt === '12h') {
           state.use12HourTime = true;
           if (elements.timeFormatLabel) elements.timeFormatLabel.textContent = '12h AM/PM';
+        } else {
+          state.use12HourTime = false;
+          if (elements.timeFormatLabel) elements.timeFormatLabel.textContent = '24h';
         }
 
         const savedOrder = localStorage.getItem('photo_stamp_field_order');
@@ -2320,12 +2338,12 @@
       elements.inputDate.value = state.date;
       elements.inputTime.value = state.time;
 
-      if (!state.projectName) state.projectName = '';
-      if (!state.markaz) state.markaz = '';
+      state.projectName = '';
+      state.markaz = '';
       if (!state.note) state.note = '';
 
-      elements.inputProject.value = state.projectName;
-      elements.inputMarkaz.value = state.markaz;
+      elements.inputProject.value = '';
+      elements.inputMarkaz.value = '';
       elements.inputNote.value = state.note;
     }
 
@@ -2333,17 +2351,17 @@
       state.use12HourTime = !state.use12HourTime;
       localStorage.setItem('photo_stamp_time_fmt', state.use12HourTime ? '12h' : '24h');
       if (elements.timeFormatLabel) {
-        elements.timeFormatLabel.textContent = state.use12HourTime ? '12h AM/PM' : '24h Dots';
+        elements.timeFormatLabel.textContent = state.use12HourTime ? '12h AM/PM' : '24h';
       }
       redrawPreview();
-      showToast(state.use12HourTime ? 'Switched to 12h AM/PM' : 'Switched to Conota 24h dots');
+      showToast(state.use12HourTime ? 'Switched to 12h AM/PM (DD/MM/YYYY)' : 'Switched to 24h (DD/MM/YYYY)');
     }
 
     function formatDate(d) {
       const year = d.getFullYear();
       const month = String(d.getMonth() + 1).padStart(2, '0');
       const day = String(d.getDate()).padStart(2, '0');
-      return `${year}-${month}-${day}`;
+      return `${day}/${month}/${year}`;
     }
 
     function formatTime(d) {
@@ -2418,9 +2436,19 @@
             redrawPreview();
             showToast(`🎯 School auto-detected within ${nearby.distance}m: ${nearby.school.name}`);
           } else {
+            // When no school is within radius: leave project name and school name blank!
+            state.selectedSchool = null;
+            state.projectName = '';
+            state.markaz = '';
+            elements.inputProject.value = '';
+            elements.inputMarkaz.value = '';
+            elements.selectedSchoolBadge.style.display = 'none';
+            elements.schoolSearchInput.value = '';
+            elements.btnClearSearch.style.display = 'none';
+
             redrawPreview();
             if (showFeedback) {
-              showToast(`GPS acquired: ${state.lat.toFixed(5)}, ${state.lon.toFixed(5)}`);
+              showToast(`GPS acquired: ${state.lat.toFixed(5)}, ${state.lon.toFixed(5)} (No school within 30m - fields blank)`);
             }
           }
         },
@@ -2530,8 +2558,27 @@
       state.originalWidth = width;
       state.originalHeight = height;
 
-      // Automatically apply a fresh 1-5m offset if a school is currently selected!
-      if (state.selectedSchool) {
+      // Check if current location is within 30m radius of any school; otherwise leave blank!
+      const nearby = (state.lat != null && state.lon != null) ? checkNearbySchool(state.lat, state.lon, 30) : null;
+      if (nearby) {
+        state.selectedSchool = nearby.school;
+        state.markaz = nearby.school.markaz;
+        state.projectName = nearby.school.name;
+
+        elements.inputMarkaz.value = state.markaz;
+        elements.inputProject.value = state.projectName;
+
+        elements.selectedSchoolNameText.textContent = nearby.school.name;
+        elements.selectedSchoolMetaText.textContent = `🎯 Auto-detected within ${nearby.distance}m • ${nearby.school.markaz}`;
+        elements.selectedSchoolBadge.style.display = 'flex';
+      } else if (!state.selectedSchool) {
+        // No school selected or within radius: leave project name and school name blank!
+        state.projectName = '';
+        state.markaz = '';
+        elements.inputProject.value = '';
+        elements.inputMarkaz.value = '';
+        if (elements.selectedSchoolBadge) elements.selectedSchoolBadge.style.display = 'none';
+      } else {
         applyGpsOffsetToSchool(state.selectedSchool.lat, state.selectedSchool.lng, false);
       }
 
@@ -2672,12 +2719,33 @@
 
     function formatStampDateTime(dateStr, timeStr) {
       let day, month, year;
-      if (dateStr && dateStr.includes('-')) {
-        const parts = dateStr.split('-');
-        year = parts[0];
-        month = parts[1].padStart(2, '0');
-        day = parts[2].padStart(2, '0');
-      } else {
+      if (dateStr) {
+        const cleanStr = String(dateStr).trim();
+        if (cleanStr.includes('/')) {
+          const parts = cleanStr.split('/');
+          if (parts[0].length === 4) {
+            year = parts[0]; month = parts[1].padStart(2, '0'); day = parts[2].padStart(2, '0');
+          } else {
+            day = parts[0].padStart(2, '0'); month = parts[1].padStart(2, '0'); year = parts[2];
+          }
+        } else if (cleanStr.includes('-')) {
+          const parts = cleanStr.split('-');
+          if (parts[0].length === 4) {
+            year = parts[0]; month = parts[1].padStart(2, '0'); day = parts[2].padStart(2, '0');
+          } else {
+            day = parts[0].padStart(2, '0'); month = parts[1].padStart(2, '0'); year = parts[2];
+          }
+        } else if (cleanStr.includes('.')) {
+          const parts = cleanStr.split('.');
+          if (parts[0].length === 4) {
+            year = parts[0]; month = parts[1].padStart(2, '0'); day = parts[2].padStart(2, '0');
+          } else {
+            day = parts[0].padStart(2, '0'); month = parts[1].padStart(2, '0'); year = parts[2];
+          }
+        }
+      }
+
+      if (!day || !month || !year || isNaN(day) || isNaN(month) || isNaN(year)) {
         const now = new Date();
         day = String(now.getDate()).padStart(2, '0');
         month = String(now.getMonth() + 1).padStart(2, '0');
@@ -2704,8 +2772,7 @@
         const hours12Formatted = String(hours12).padStart(2, '0');
         return `${day}/${month}/${year} ${hours12Formatted}:${minutesFormatted} ${ampm}`;
       } else {
-        // Conota exact sample style: 19.11.2026 12:14
-        return `${day}.${month}.${year} ${hours24}:${minutesFormatted}`;
+        return `${day}/${month}/${year} ${hours24}:${minutesFormatted}`;
       }
     }
 
@@ -3334,7 +3401,17 @@
 
         showToast(`🎯 School auto-detected within ${nearby.distance}m: ${nearby.school.name}`);
       } else {
-        showToast('Coordinates updated from map!');
+        // No school within 30m of map pin: leave project name and school name blank!
+        state.selectedSchool = null;
+        state.projectName = '';
+        state.markaz = '';
+        elements.inputProject.value = '';
+        elements.inputMarkaz.value = '';
+        elements.selectedSchoolBadge.style.display = 'none';
+        elements.schoolSearchInput.value = '';
+        elements.btnClearSearch.style.display = 'none';
+
+        showToast('Coordinates updated from map (No school within 30m - fields blank)');
       }
 
       closeMapModal();
