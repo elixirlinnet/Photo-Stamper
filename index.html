@@ -266,19 +266,35 @@
       background: rgba(56, 189, 248, 0.08);
     }
 
-    /* Action bar below preview when photo is loaded */
+    /* Hide native file inputs completely (prevents duplicate choose file buttons on top) */
+    input[type="file"] {
+      display: none !important;
+    }
+
+    /* Action bar below preview when photo is loaded - Mobile optimized 2x2 grid */
     .change-photo-bar {
-      padding: 8px 12px;
+      padding: 8px 10px;
       background: rgba(17, 24, 39, 0.95);
       border-top: 1px solid var(--border-color);
-      display: flex;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
       gap: 8px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    @media (min-width: 520px) {
+      .change-photo-bar {
+        grid-template-columns: repeat(4, 1fr);
+      }
     }
 
     .mini-btn {
-      flex: 1;
-      padding: 9px 12px;
-      font-size: 0.82rem;
+      width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      padding: 9px 8px;
+      font-size: 0.8rem;
       font-weight: 600;
       border-radius: var(--radius-sm);
       border: 1px solid var(--border-color);
@@ -289,6 +305,7 @@
       justify-content: center;
       gap: 6px;
       cursor: pointer;
+      white-space: nowrap;
       transition: background 0.2s, border-color 0.2s;
     }
 
@@ -833,9 +850,11 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
       grid-column: 1 / -1;
       margin-top: 4px;
-      padding-top: 4px;
+      padding-top: 6px;
       border-top: 1px dashed rgba(255,255,255,0.08);
     }
 
@@ -885,6 +904,8 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
       grid-column: 1 / -1;
       margin-top: 4px;
       padding-bottom: 2px;
@@ -1247,9 +1268,9 @@
   </header>
 
   <main>
-    <!-- Hidden File Inputs: Gallery and Camera -->
-    <input type="file" id="fileInput" accept="image/*">
-    <input type="file" id="cameraInput" accept="image/*" capture="environment">
+    <!-- Hidden File Inputs: Gallery and Camera (Triggered via UI buttons) -->
+    <input type="file" id="fileInput" accept="image/*" style="display: none;">
+    <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;">
 
     <!-- Canvas Preview Card -->
     <section class="preview-card">
@@ -1457,22 +1478,22 @@
           <input type="number" step="any" id="inputLon" placeholder="e.g. 72.202013" oninput="onCoordinatesManuallyEdited()">
         </div>
 
-        <!-- Name / School Name Field (Line 1 of Stamp) -->
-        <div class="input-group full-width">
-          <label for="inputProject">
-            <span>Name / School Name</span>
-            <span style="font-size: 0.70rem; color: var(--text-muted);">From 213 Schools or write custom (optional)</span>
-          </label>
-          <input type="text" id="inputProject" placeholder="e.g. Hafiz Muhammad Asim or School Name (or leave blank)" oninput="onDataChanged()">
-        </div>
-
-        <!-- Markaz / Sub-area Field (Line 2 of Stamp) -->
+        <!-- Markaz / Sub-area Field (Line 1 of Stamp) -->
         <div class="input-group full-width">
           <label for="inputMarkaz">
             <span>Markaz Name</span>
             <span style="font-size: 0.70rem; color: var(--text-muted);">From 213 Schools or write custom (optional)</span>
           </label>
           <input type="text" id="inputMarkaz" placeholder="e.g. Markaz Katha Saghral East (or leave blank)" oninput="onDataChanged()">
+        </div>
+
+        <!-- Name / School Name Field (Line 2 of Stamp) -->
+        <div class="input-group full-width">
+          <label for="inputProject">
+            <span>Name / School Name</span>
+            <span style="font-size: 0.70rem; color: var(--text-muted);">From 213 Schools or write custom (optional)</span>
+          </label>
+          <input type="text" id="inputProject" placeholder="e.g. Hafiz Muhammad Asim or School Name (or leave blank)" oninput="onDataChanged()">
         </div>
 
         <!-- Custom Notes Field (Optional) -->
@@ -1482,14 +1503,6 @@
             <span style="font-size: 0.70rem; color: var(--text-muted);">Only stamped if filled</span>
           </label>
           <input type="text" id="inputNote" placeholder="e.g. Inspection Visit (optional)" oninput="onDataChanged()">
-        </div>
-
-        <!-- Fallback Location / Address Field -->
-        <div class="input-group full-width">
-          <label for="inputAddress">
-            <span>Location / Address (Optional)</span>
-          </label>
-          <input type="text" id="inputAddress" placeholder="Tehsil Khushab (optional)" oninput="onDataChanged()">
         </div>
       </div>
     </section>
@@ -1582,9 +1595,8 @@
       use12HourTime: false,     // false: 19.11.2026 12:14 (sample style), true: 19/11/2026 12:14 PM
       lat: null,
       lon: null,
-      projectName: '',          // Name / School Name (Line 1)
-      markaz: '',               // Markaz Name (Line 2)
-      address: '',              // Fallback Location
+      markaz: '',               // Markaz Name (Line 1)
+      projectName: '',          // Name / School Name (Line 2)
       note: '',                 // Custom Note
       isGeolocating: false,
       schoolsList: [],          // Array of Khushab schools
@@ -1620,10 +1632,9 @@
       inputTime: document.getElementById('inputTime'),
       inputLat: document.getElementById('inputLat'),
       inputLon: document.getElementById('inputLon'),
-      inputProject: document.getElementById('inputProject'),
       inputMarkaz: document.getElementById('inputMarkaz'),
+      inputProject: document.getElementById('inputProject'),
       inputNote: document.getElementById('inputNote'),
-      inputAddress: document.getElementById('inputAddress'),
       btnSave: document.getElementById('btnSave'),
       btnShare: document.getElementById('btnShare'),
       mapModal: document.getElementById('mapModal'),
@@ -1820,14 +1831,12 @@
       elements.schoolSearchInput.value = school.name;
       elements.schoolDropdown.style.display = 'none';
 
-      // Populate Name & Markaz Name
-      state.projectName = school.name;
+      // Populate Markaz Name & School Name
       state.markaz = school.markaz;
-      state.address = `${school.name}, ${school.markaz}, KHUSHAB`;
+      state.projectName = school.name;
 
-      elements.inputProject.value = state.projectName;
       elements.inputMarkaz.value = state.markaz;
-      elements.inputAddress.value = state.address;
+      elements.inputProject.value = state.projectName;
 
       // Apply Random 1 to 5 meter GPS Offset
       applyGpsOffsetToSchool(school.lat, school.lng);
@@ -2110,9 +2119,7 @@
             if (addr.state) parts.push(addr.state);
             if (addr.country) parts.push(addr.country);
 
-            const formatted = parts.length > 0 ? parts.join(', ') : data.display_name;
-            state.address = formatted;
-            elements.inputAddress.value = formatted;
+            // Address option removed per user preference; coordinates recorded directly
             redrawPreview();
           }
         }
@@ -2236,10 +2243,6 @@
       const img = new Image();
       img.onload = () => {
         setImageSource(img, 1920, 1080);
-        if (!state.address) {
-          state.address = "GPS DHOK CHAPRI, JAUHARABAD NORTH, KHUSHAB";
-          elements.inputAddress.value = state.address;
-        }
         if (!state.note) {
           state.note = "School Inspection - PSRP-I Survey";
           elements.inputNote.value = state.note;
@@ -2278,13 +2281,12 @@
       state.time = elements.inputTime.value;
       state.lat = elements.inputLat.value ? parseFloat(elements.inputLat.value) : null;
       state.lon = elements.inputLon.value ? parseFloat(elements.inputLon.value) : null;
-      state.projectName = elements.inputProject.value;
       state.markaz = elements.inputMarkaz.value;
+      state.projectName = elements.inputProject.value;
       state.note = elements.inputNote.value;
-      state.address = elements.inputAddress.value;
 
-      localStorage.setItem('photo_stamp_project', state.projectName);
       localStorage.setItem('photo_stamp_markaz', state.markaz);
+      localStorage.setItem('photo_stamp_project', state.projectName);
       localStorage.setItem('photo_stamp_note', state.note);
 
       redrawPreview();
@@ -2452,13 +2454,13 @@
       ctx.save();
       ctx.font = `500 ${fontSize}px Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif`;
 
-      // Build lines: Name/School (Line 1), Markaz (Line 2), Date & Time (Line 3), Coordinates (Line 4), Notes (optional)
+      // Build lines: Markaz (Line 1), Name/School (Line 2), Date & Time (Line 3), Coordinates (Line 4), Notes (optional)
       const rawLines = [];
-      if (state.projectName && state.projectName.trim()) {
-        rawLines.push(state.projectName.trim());
-      }
       if (state.markaz && state.markaz.trim()) {
         rawLines.push(state.markaz.trim());
+      }
+      if (state.projectName && state.projectName.trim()) {
+        rawLines.push(state.projectName.trim());
       }
       rawLines.push(formatStampDateTime(state.date, state.time));
       rawLines.push(formatStampCoordinates(state.lat, state.lon));
@@ -2531,8 +2533,8 @@
       const valFont = `500 ${fontSize}px Roboto, -apple-system, sans-serif`;
 
       const rows = [];
-      if (state.projectName) rows.push({ label: 'NAME', val: state.projectName });
       if (state.markaz) rows.push({ label: 'MARKAZ', val: state.markaz });
+      if (state.projectName) rows.push({ label: 'NAME', val: state.projectName });
       rows.push({ label: 'TIME', val: timeStr });
       rows.push({ label: 'GPS', val: coordText });
       if (state.note) rows.push({ label: 'NOTE', val: state.note });
@@ -2585,8 +2587,8 @@
       const lineHeight = Math.round(fontSize * 1.35);
 
       const lines = [];
-      if (state.projectName) lines.push(state.projectName);
       if (state.markaz) lines.push(state.markaz);
+      if (state.projectName) lines.push(state.projectName);
       lines.push(timeStr);
       lines.push(coordText);
       if (state.note) lines.push(state.note);
@@ -2642,8 +2644,8 @@
 
       // Bottom left location info
       const botLines = [];
-      if (state.projectName) botLines.push(state.projectName);
       if (state.markaz) botLines.push(state.markaz);
+      if (state.projectName) botLines.push(state.projectName);
       botLines.push(coordText);
       if (state.note) botLines.push(state.note);
 
@@ -2684,8 +2686,8 @@
       const lineHeight = Math.round(fontSize * 1.35);
 
       const lines = [];
-      if (state.projectName) lines.push(state.projectName);
       if (state.markaz) lines.push(state.markaz);
+      if (state.projectName) lines.push(state.projectName);
       lines.push(timeStr);
       lines.push(coordText);
       if (state.note) lines.push(state.note);
@@ -2944,10 +2946,7 @@
       elements.inputLon.value = state.lon;
       elements.jitterBadge.textContent = 'Map Pin';
 
-      if (tempMapAddress) {
-        state.address = tempMapAddress;
-        elements.inputAddress.value = tempMapAddress;
-      }
+      // Location / Address option removed per user preference
 
       closeMapModal();
       
