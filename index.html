@@ -758,6 +758,67 @@
       letter-spacing: 0.5px;
     }
 
+
+    .btn-action-pill {
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--accent-color);
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: 14px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .btn-action-pill:hover {
+      background: rgba(56, 189, 248, 0.22);
+      border-color: var(--accent-color);
+      transform: translateY(-1px);
+    }
+
+    .btn-action-pill.highlight {
+      background: linear-gradient(135deg, #0284c7, #38bdf8);
+      color: #ffffff;
+      border: none;
+      box-shadow: 0 2px 8px rgba(56, 189, 248, 0.3);
+    }
+
+    .btn-action-pill.highlight:hover {
+      box-shadow: 0 4px 12px rgba(56, 189, 248, 0.45);
+    }
+
+    .field-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      grid-column: 1 / -1;
+      margin-top: 2px;
+      padding-bottom: 2px;
+    }
+
+    .field-header-title {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-pill-badge {
+      font-size: 0.7rem;
+      color: var(--accent-color);
+      font-family: monospace;
+      font-weight: 600;
+      background: rgba(56, 189, 248, 0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid rgba(56, 189, 248, 0.2);
+    }
+
     .btn-shuffle-jitter {
       background: linear-gradient(135deg, #0284c7, #38bdf8);
       border: none;
@@ -1763,46 +1824,11 @@
       </div>
     </section>
 
-    <!-- Two Data Modes: Segmented Toggle ("Auto" vs "Manual") -->
-    <section>
-      <div class="section-label">
-        <span>Data Mode</span>
-      </div>
-      <div class="mode-switch-container">
-        <button type="button" class="mode-btn active" id="btnModeAuto" onclick="setDataMode('auto')">
-          <svg class="icon" viewBox="0 0 24 24">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
-          </svg>
-          Auto GPS & Time
-        </button>
-        <button type="button" class="mode-btn" id="btnModeManual" onclick="setDataMode('manual')">
-          <svg class="icon" viewBox="0 0 24 24">
-            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
-          </svg>
-          Manual & School Search
-        </button>
-      </div>
-    </section>
-
-    <!-- Auto GPS Status Banner (Visible in Auto Mode) -->
-    <div class="status-banner" id="gpsStatusBanner">
-      <div class="status-left">
-        <span class="status-indicator" id="gpsIndicator"></span>
-        <span class="status-text" id="gpsStatusText">Detecting device GPS & time...</span>
-      </div>
-      <button type="button" class="gps-refresh-btn" onclick="fetchAutoData(true)">
-        <svg class="icon" style="width: 14px; height: 14px;" viewBox="0 0 24 24">
-          <path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0 0 13 3.06V1h-2v2.06A8.994 8.994 0 0 0 3.06 11H1v2h2.06A8.994 8.994 0 0 0 11 20.94V23h2v-2.06A8.994 8.994 0 0 0 20.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/>
-        </svg>
-        Refresh
-      </button>
-    </div>
-
     <!-- Data Form -->
     <section class="form-card">
       
       <!-- School Search Feature (Active in Manual Mode) -->
-      <div class="school-search-card" id="schoolSearchCard" style="display: none;">
+      <div class="school-search-card" id="schoolSearchCard">
         <div class="school-search-header">
           <span class="school-search-title">
             <svg class="icon" style="width: 16px; height: 16px; fill: #38bdf8;" viewBox="0 0 24 24">
@@ -1840,6 +1866,20 @@
       </div>
 
       <div class="form-grid">
+        <!-- Date & Time Row with Auto Button -->
+        <div class="field-header-row">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="field-header-title">Date & Time</span>
+            <span class="status-pill-badge" id="dateTimeBadge">Auto Active</span>
+          </div>
+          <button type="button" class="btn-action-pill" id="btnAutoDateTime" onclick="syncAutoDateTime(true)" title="Sync current date & time from device">
+            <svg class="icon" style="width: 13px; height: 13px;" viewBox="0 0 24 24">
+              <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+            </svg>
+            Auto Date & Time
+          </button>
+        </div>
+
         <div class="input-group">
           <label for="inputDate">Date</label>
           <input type="date" id="inputDate" oninput="onDataChanged()">
@@ -1849,18 +1889,29 @@
           <input type="time" id="inputTime" step="1" oninput="onDataChanged()">
         </div>
 
-        <!-- Coordinates Row with Shuffle 1-5m Button -->
+        <!-- Coordinates Row with Auto GPS, Jitter, and Map Buttons -->
         <div class="coords-header-row">
           <div style="display: flex; align-items: center; gap: 8px;">
             <span class="coords-header-title">Coordinates</span>
             <span class="jitter-pill" id="jitterBadge">±0.0m</span>
           </div>
-          <button type="button" class="btn-shuffle-jitter" id="btnShuffleJitter" onclick="shuffleGpsJitter()" title="Apply fresh 1-5m random offset">
-            <svg class="icon" style="width: 14px; height: 14px;" viewBox="0 0 24 24">
-              <path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/>
-            </svg>
-            Shuffle 1–5m
-          </button>
+          <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+            <button type="button" class="btn-action-pill highlight" id="btnAutoGps" onclick="fetchAutoGps(true)" title="Detect device GPS coordinates automatically">
+              <svg class="icon" style="width: 13px; height: 13px;" viewBox="0 0 24 24">
+                <path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0 0 13 3.06V1h-2v2.06A8.994 8.994 0 0 0 3.06 11H1v2h2.06A8.994 8.994 0 0 0 11 20.94V23h2v-2.06A8.994 8.994 0 0 0 20.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/>
+              </svg>
+              Auto GPS
+            </button>
+            <button type="button" class="btn-action-pill" id="btnShuffleJitter" onclick="shuffleGpsJitter()" title="Apply fresh 1-5m random offset">
+              <svg class="icon" style="width: 13px; height: 13px;" viewBox="0 0 24 24">
+                <path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/>
+              </svg>
+              ±1–5m
+            </button>
+            <button type="button" class="btn-action-pill" id="btnPickMap" onclick="openMapModal()" title="Pick coordinates on interactive map">
+              📍 Map
+            </button>
+          </div>
         </div>
 
         <div class="input-group">
@@ -1872,42 +1923,39 @@
           <input type="number" step="any" id="inputLon" placeholder="e.g. 72.202013" oninput="onCoordinatesManuallyEdited()">
         </div>
 
-        <!-- Project / School Name Field -->
-        <div class="input-group full-width">
-          <label for="inputProject">
-            <span>Project / School Name</span>
-            <span style="font-size: 0.70rem; color: var(--accent-color);">Watermark Project: Field</span>
-          </label>
-          <input type="text" id="inputProject" placeholder="e.g. 38210008 - GPS DHOK CHAPRI" oninput="onDataChanged()">
-        </div>
-
-        <!-- Markaz / Sub-area Field -->
+        <!-- Markaz / Sub-area Field (Line 1) -->
         <div class="input-group full-width">
           <label for="inputMarkaz">
-            <span>Markaz / Sub-area</span>
-            <span style="font-size: 0.70rem; color: var(--accent-color);">Watermark Markaz: Field</span>
+            <span>Markaz Name</span>
+            <span style="font-size: 0.70rem; color: var(--text-muted);">Leave blank or write custom</span>
           </label>
-          <input type="text" id="inputMarkaz" placeholder="e.g. JAUHARABAD NORTH (MALE)" oninput="onDataChanged()">
+          <input type="text" id="inputMarkaz" placeholder="e.g. JAUHARABAD NORTH (MALE) (or leave blank)" oninput="onDataChanged()">
+        </div>
+
+        <!-- School Name Field (Line 2) -->
+        <div class="input-group full-width">
+          <label for="inputProject">
+            <span>School Name</span>
+            <span style="font-size: 0.70rem; color: var(--text-muted);">From 213 Schools or write custom</span>
+          </label>
+          <input type="text" id="inputProject" placeholder="e.g. 38210008 - GPS DHOK CHAPRI (or leave blank)" oninput="onDataChanged()">
         </div>
 
         <!-- Custom Notes Field -->
         <div class="input-group full-width">
           <label for="inputNote">
-            <span>Custom Notes</span>
-            <span style="font-size: 0.70rem; color: var(--text-muted);">Watermark Notes: Field</span>
+            <span>Custom Notes (Optional)</span>
+            <span style="font-size: 0.70rem; color: var(--text-muted);">Only rendered if filled</span>
           </label>
-          <input type="text" id="inputNote" placeholder="e.g. School Monitoring Visit - Verification" oninput="onDataChanged()">
+          <input type="text" id="inputNote" placeholder="e.g. Inspection Visit (optional)" oninput="onDataChanged()">
         </div>
 
-        <!-- Location / Address Field with Map Picker -->
+        <!-- Fallback Location / Address Field -->
         <div class="input-group full-width">
           <label for="inputAddress">
-            <span>Location / Address (Fallback)</span>
-            <button type="button" class="btn-pick-map" id="btnPickMap" onclick="openMapModal()">
-              📍 Pick on Map
-            </button>
+            <span>Location / Address (Optional)</span>
           </label>
-          <input type="text" id="inputAddress" placeholder="Tehsil Khushab, Punjab, Pakistan" oninput="onDataChanged()">
+          <input type="text" id="inputAddress" placeholder="Tehsil Khushab (optional)" oninput="onDataChanged()">
         </div>
       </div>
     </section>
@@ -2149,613 +2197,74 @@
 
   <script>
     /**
-     * Photo Stamp Pro Application Logic
-     * Conota Watermark Engine & Tehsil Khushab Schools Integration
+     * Auto Date & Time: Sync with Device Clock
      */
-
-    // Embedded 213 Tehsil Khushab Schools dataset (instant offline fallback)
-    const EMBEDDED_KHUSHAB_SCHOOLS = [{"tehsil":"KHUSHAB","markaz":"JAUHARABAD NORTH (MALE)","name":"38210008 - GPS DHOK CHAPRI","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.469908,"lng":72.202013},{"tehsil":"KHUSHAB","markaz":"RODA NORTH (MALE)","name":"38210070 - GPS DERA MUHAMMAD ALI","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.117401,"lng":72.212135},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL SOUTH (MALE)","name":"38210099 - GPS DERA CHAKAN","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.502389,"lng":72.452693},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL NORTH (MALE)","name":"38210102 - GPS CHANGA DAKHLI","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.6064,"lng":72.4555},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL EAST (MALE)","name":"38210110 - GPS MANGWAL","gender":"Male","level":"Primary","category":"SED","lat":32.5378002,"lng":72.5681664},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL WEST (MALE)","name":"38210113 - GPS MIAN WALA NALLI","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.419814,"lng":72.311477},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD EAST (MALE)","name":"38210116 - GPS PEER WAL NARI","gender":"Male","level":"Primary","category":"SED","lat":32.476729,"lng":72.408192},{"tehsil":"KHUSHAB","markaz":"RODA NORTH (MALE)","name":"38210121 - GPS AWANA WALA","gender":"Male","level":"Primary","category":"SED","lat":32.13183219,"lng":72.00214148},{"tehsil":"KHUSHAB","markaz":"RODA SOUTH (MALE)","name":"38210122 - GPS FALAK SHER NOON","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.04999,"lng":72.0522},{"tehsil":"KHUSHAB","markaz":"RODA NORTH (MALE)","name":"38210123 - GPS KHAKHAN WALA (ASP)","gender":"Male","level":"Primary","category":"SED","lat":32.06495545,"lng":72.1405039},{"tehsil":"KHUSHAB","markaz":"RODA NORTH (MALE)","name":"38210124 - GPS KHAN MUHAMMAD VIRK","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.057065,"lng":72.182138},{"tehsil":"KHUSHAB","markaz":"RODA SOUTH (MALE)","name":"38210127 - GPS MUBARAK CHANWAS","gender":"Male","level":"Primary","category":"SED","lat":32.016773,"lng":72.098913},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SADAR (MALE)","name":"38210129 - GPS PAK KUWAIT MILLS KHUSHAB","gender":"Male","level":"Primary","category":"SED","lat":32.306847,"lng":72.248701},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SADAR (MALE)","name":"38210130 - GPS RAILWAY STATION HADALI","gender":"Male","level":"Primary","category":"SED","lat":32.299496,"lng":72.182599},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SADAR (MALE)","name":"38210131 - GPS RAMZAN COLONY JOUHARABAD","gender":"Male","level":"Primary","category":"SED","lat":32.27886,"lng":72.26396},{"tehsil":"KHUSHAB","markaz":"RODA NORTH (MALE)","name":"38210135 - GPS SONA LODI","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.118182,"lng":72.151423},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA EAST (MALE)","name":"38210136 - GPS SULTAN MEHMOOD VIRK","gender":"Male","level":"Primary","category":"PSRP-III","lat":32.05379,"lng":72.16628},{"tehsil":"KHUSHAB","markaz":"RODA SOUTH (MALE)","name":"38210137 - GPS ZAFAR WALA","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.044941,"lng":72.161074},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF NORTH (MALE)","name":"38210138 - GPS BHAN CHOONI","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.455501,"lng":72.078351},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF NORTH (MALE)","name":"38210146 - GPS PAPRALI","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.490721,"lng":72.1375414},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA WEST (MALE)","name":"38210149 - GPS YARAN FAQIR","gender":"Male","level":"Primary","category":"SED","lat":32.1283,"lng":71.99124},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SADAR (MALE)","name":"38210154 - GPS ALKOSAR TAJPURA","gender":"Male","level":"Primary","category":"SED","lat":32.284271,"lng":72.35251},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD EAST (MALE)","name":"38210156 - GPS BADLI WALA","gender":"Male","level":"Primary","category":"SED","lat":32.305646,"lng":72.333783},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD NORTH (MALE)","name":"38210157 - GPS BHARKIN","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.405711,"lng":72.266286},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD NORTH (MALE)","name":"38210159 - GPS BURJ MOHRA","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.4411,"lng":72.2737},{"tehsil":"KHUSHAB","markaz":"KHUSHAB NORTH (MALE)","name":"38210161 - GPS CHABEEL","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.39227,"lng":72.39428},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD EAST (MALE)","name":"38210162 - GPS CHAK NO. 54 MB","gender":"Male","level":"Primary","category":"SED","lat":32.354928,"lng":72.294514},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD NORTH (MALE)","name":"38210164 - GPS CHAPPAR SHARIF","gender":"Male","level":"Primary","category":"SED","lat":32.435886,"lng":72.176807},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD NORTH (MALE)","name":"38210165 - GPS DERA ALI KHAN","gender":"Male","level":"Primary","category":"SED","lat":32.426758,"lng":72.223705},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF NORTH (MALE)","name":"38210166 - GPS DERA ALLAH YAR","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.359059,"lng":72.182608},{"tehsil":"KHUSHAB","markaz":"KHUSHAB NORTH (MALE)","name":"38210168 - GPS DERA BAHADUR KHAN (ASP)","gender":"Male","level":"Primary","category":"SED","lat":32.400532,"lng":72.410095},{"tehsil":"KHUSHAB","markaz":"KHUSHAB NORTH (MALE)","name":"38210169 - GPS DERA GHULAM SARWAR","gender":"Male","level":"Primary","category":"SED","lat":32.32458,"lng":72.40324},{"tehsil":"KHUSHAB","markaz":"KHUSHAB NORTH (MALE)","name":"38210170 - GPS DERA HAJI HANIF","gender":"Male","level":"Primary","category":"SED","lat":32.36991,"lng":72.38429},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD EAST (MALE)","name":"38210172 - GPS DERA MUHAMMAD NAWAZ","gender":"Male","level":"Primary","category":"SED","lat":32.380316,"lng":72.265948},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD NORTH (MALE)","name":"38210173 - GPS DERA MUHAMMAD KHAN","gender":"Male","level":"Primary","category":"SED","lat":32.416753,"lng":72.233692},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL EAST (MALE)","name":"38210174 - GPS DERA MUHAMMAD SIDDIQUE","gender":"Male","level":"Primary","category":"SED","lat":32.357193,"lng":72.405955},{"tehsil":"KHUSHAB","markaz":"KHUSHAB NORTH (MALE)","name":"38210175 - GPS GHAGH KALAN","gender":"Male","level":"Primary","category":"SED","lat":32.36216,"lng":72.4356},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SADAR (MALE)","name":"38210176 - GPS ISLAM PURA KUSHAB","gender":"Male","level":"Primary","category":"SED","lat":32.294371,"lng":72.342673},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SADAR (MALE)","name":"38210177 - GPS JAMIA NOOR UL ISLAM","gender":"Male","level":"Primary","category":"SED","lat":32.295691,"lng":72.358306},{"tehsil":"KHUSHAB","markaz":"KHUSHAB NORTH (MALE)","name":"38210178 - GPS JANDRAN","gender":"Male","level":"Primary","category":"SED","lat":32.33208,"lng":72.41769},{"tehsil":"KHUSHAB","markaz":"KHUSHAB NORTH (MALE)","name":"38210180 - GPS KAURA","gender":"Male","level":"Primary","category":"SED","lat":32.36894,"lng":72.47116},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SADAR (MALE)","name":"38210182 - GPS MUDHAN WALA","gender":"Male","level":"Primary","category":"SED","lat":32.301176,"lng":72.353496},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD NORTH (MALE)","name":"38210183 - GPS NARA","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.427058,"lng":72.149792},{"tehsil":"KHUSHAB","markaz":"KHUSHAB NORTH (MALE)","name":"38210184 - GPS NOOR WANA (ASP)","gender":"Male","level":"Primary","category":"SED","lat":32.352404,"lng":72.450764},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF NORTH (MALE)","name":"38210185 - GPS PEERHA MARKHAL","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.401546,"lng":72.192955},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF NORTH (MALE)","name":"38210186 - GPS PINDI KORA","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.374809,"lng":72.192338},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD NORTH (MALE)","name":"38210187 - GPS PINDI MEHRWAL","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.42539,"lng":72.29367},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD NORTH (MALE)","name":"38210188 - GPS POTHA","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.506201,"lng":72.190957},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SADAR (MALE)","name":"38210189 - GPS RONAQ PURA","gender":"Male","level":"Primary","category":"SED","lat":32.304074,"lng":72.359556},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD EAST (MALE)","name":"38210190 - GPS SAGHRALI","gender":"Male","level":"Primary","category":"PSRP-III","lat":32.389286,"lng":72.243238},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SADAR (MALE)","name":"38210191 - GPS SHAHANAN WALA KHUSHAB","gender":"Male","level":"Primary","category":"SED","lat":32.284966,"lng":72.344499},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL EAST (MALE)","name":"38210192 - GPS THATHI SANDRAL","gender":"Male","level":"Primary","category":"SED","lat":32.352088,"lng":72.412136},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SOUTH (MALE)","name":"38210193 - GPS UMER TAJPURA KHUSHAB","gender":"Male","level":"Primary","category":"SED","lat":32.3048,"lng":72.364916},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD EAST (MALE)","name":"38210195 - GPS WAHEER SHARQI","gender":"Male","level":"Primary","category":"SED","lat":32.416291,"lng":72.285572},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SADAR (MALE)","name":"38210197 - GPS MC NO. 2 KHUSHAB","gender":"Male","level":"Primary","category":"SED","lat":32.2952,"lng":72.351431},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SADAR (MALE)","name":"38210198 - GPS MC NO. 3 KHUSHAB MOHALLAH HAKIMAN WALA","gender":"Male","level":"Primary","category":"SED","lat":32.291781,"lng":72.354404},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SADAR (MALE)","name":"38210200 - GPS MC NO. 5 KHUSHAB","gender":"Male","level":"Primary","category":"SED","lat":32.292274,"lng":72.346467},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA EAST (MALE)","name":"38210253 - GPS BILOO FARM","gender":"Male","level":"Primary","category":"SED","lat":32.16447,"lng":72.20473},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD EAST (MALE)","name":"38210254 - GPS CHAK NO 57 MB","gender":"Male","level":"Primary","category":"SED","lat":32.367545,"lng":72.340606},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SOUTH (MALE)","name":"38210255 - GES CHAK NO 39 MB","gender":"Male","level":"Middle","category":"SED","lat":32.1268549,"lng":72.2272214},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA SADAR (MALE)","name":"38210256 - GPS CHAK NO 44 MB","gender":"Male","level":"Primary","category":"SED","lat":32.22091,"lng":72.19629},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA EAST (MALE)","name":"38210257 - GPS CHAK NO 45 MB","gender":"Male","level":"Primary","category":"SED","lat":32.20396,"lng":72.22072},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SOUTH (MALE)","name":"38210258 - GES CHAK NO 46 MB","gender":"Male","level":"Middle","category":"SED","lat":32.2140049,"lng":72.229554},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA SADAR (MALE)","name":"38210259 - GPS CHAK NO 48 MB","gender":"Male","level":"Primary","category":"SED","lat":32.24507,"lng":72.20561},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA SADAR (MALE)","name":"38210260 - GPS CHAK NO 49 MB","gender":"Male","level":"Primary","category":"SED","lat":32.23619,"lng":72.22639},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA EAST (MALE)","name":"38210261 - GPS CHAK NO 50 MB","gender":"Male","level":"Primary","category":"SED","lat":32.2184,"lng":72.24265},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SOUTH (MALE)","name":"38210262 - GPS CHAK NO 51 MB","gender":"Male","level":"Primary","category":"SED","lat":32.23419,"lng":72.26337},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SOUTH (MALE)","name":"38210263 - GPS CHAK NO 52 MB (ASP)","gender":"Male","level":"Primary","category":"SED","lat":32.245133,"lng":72.2646},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SOUTH (MALE)","name":"38210264 - GPS CHAK NO 53 MB","gender":"Male","level":"Primary","category":"SED","lat":32.24849,"lng":72.27142},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD EAST (MALE)","name":"38210265 - GPS CHAK NO. 58 MB","gender":"Male","level":"Primary","category":"SED","lat":32.356721,"lng":72.357547},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SADAR (MALE)","name":"38210268 - GPS CHAK NO 62 MB","gender":"Male","level":"Primary","category":"SED","lat":32.327306,"lng":72.292495},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD EAST (MALE)","name":"38210269 - GES CHAK NO 63 MB","gender":"Male","level":"Middle","category":"SED","lat":32.31614,"lng":72.287396},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SOUTH (MALE)","name":"38210270 - GPS DERA MOLADAD","gender":"Male","level":"Primary","category":"SED","lat":32.19015,"lng":72.23753},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA WEST (MALE)","name":"38210271 - GPS DERA SARDAR KHAN MAHIL","gender":"Male","level":"Primary","category":"SED","lat":32.16995,"lng":72.15809},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SOUTH (MALE)","name":"38210272 - GPS DERA TIRKHANAN WALA","gender":"Male","level":"Primary","category":"SED","lat":32.26465,"lng":72.27562},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SOUTH (MALE)","name":"38210274 - GPS GIROTE BALA","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.084102,"lng":72.264037},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SOUTH (MALE)","name":"38210276 - GPS GOGO CHAKI","gender":"Male","level":"Primary","category":"PSRP-III","lat":32.110505,"lng":72.317697},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SOUTH (MALE)","name":"38210278 - GPS JHUGIAN SHEIKHWAL","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.117577,"lng":72.318835},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SOUTH (MALE)","name":"38210280 - GPS NO. 1 JOYIA","gender":"Male","level":"Primary","category":"SED","lat":32.19598,"lng":72.29594},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SOUTH (MALE)","name":"38210281 - GPS NO. 2 JOYIA","gender":"Male","level":"Primary","category":"SED","lat":32.20205,"lng":72.29682},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SADAR (MALE)","name":"38210282 - GPS JOYIA WALA CHAK NO. 63 MB","gender":"Male","level":"Primary","category":"SED","lat":32.3103,"lng":72.2992},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SOUTH (MALE)","name":"38210283 - GPS KOTLA JAGIR","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.1250176,"lng":72.272093},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SADAR (MALE)","name":"38210284 - GES KURPALKA","gender":"Male","level":"Middle","category":"SED","lat":32.245542,"lng":72.315017},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SOUTH (MALE)","name":"38210286 - GPS MEHLIAN","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.152873,"lng":72.282633},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SOUTH (MALE)","name":"38210287 - GPS MANGOOR","gender":"Male","level":"Primary","category":"SED","lat":32.2612204,"lng":72.3250596},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SOUTH (MALE)","name":"38210289 - GPS MUHIB PUR GHARBI","gender":"Male","level":"Primary","category":"SED","lat":32.1363596,"lng":72.2769039},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SOUTH (MALE)","name":"38210290 - GPS MUHAMMAD SHAH","gender":"Male","level":"Primary","category":"SED","lat":32.233365,"lng":72.310954},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SADAR (MALE)","name":"38210292 - GPS NO. 2 JAUHARABAD","gender":"Male","level":"Primary","category":"SED","lat":32.296917,"lng":72.279048},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SOUTH (MALE)","name":"38210295 - GPS RANGPUR KADHI","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.10555,"lng":72.26401},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA EAST (MALE)","name":"38210296 - GPS SHAH AJMAL GIROTE","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.0667,"lng":72.2673},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SOUTH (MALE)","name":"38210297 - GPS SHAHBAZIAN WALA","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.166338,"lng":72.292775},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA EAST (MALE)","name":"38210298 - GPS SHAHEEN COLONY","gender":"Male","level":"Primary","category":"SED","lat":32.18857,"lng":72.21453},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD EAST (MALE)","name":"38210299 - GPS SHIWALA","gender":"Male","level":"Primary","category":"SED","lat":32.330276,"lng":72.364326},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SADAR (MALE)","name":"38210301 - GPS THATHI GHANJERA","gender":"Male","level":"Primary","category":"SED","lat":32.218828,"lng":72.298736},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SOUTH (MALE)","name":"38210302 - GPS TIBBA QAIM DIN","gender":"Male","level":"Primary","category":"SED","lat":32.1519343,"lng":72.2872655},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA EAST (MALE)","name":"38210303 - GPS WASOO","gender":"Male","level":"Primary","category":"SED","lat":32.07505,"lng":72.26809},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SOUTH (MALE)","name":"38210304 - GPS ZAKIR ABAD","gender":"Male","level":"Primary","category":"SED","lat":32.1616416,"lng":72.2471425},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL WEST (MALE)","name":"38210369 - GPS AAJRIAN WALA","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.475667,"lng":72.363929},{"tehsil":"KHUSHAB","markaz":"KHUSHAB NORTH (MALE)","name":"38210370 - GPS AL MURTAZA RAJAR","gender":"Male","level":"Primary","category":"SED","lat":32.39288,"lng":72.48696},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL WEST (MALE)","name":"38210371 - GPS ARRARA","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.55622,"lng":72.37263},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL EAST (MALE)","name":"38210372 - GPS BANSI","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.4263651,"lng":72.5667059},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL EAST (MALE)","name":"38210373 - GPS BALWAL","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.4361445,"lng":72.5902591},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL WEST (MALE)","name":"38210374 - GPS BHUTTIAN WALA","gender":"Male","level":"Primary","category":"SED","lat":32.46708,"lng":72.35273},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL EAST (MALE)","name":"38210375 - GPS CHAK 65 MB","gender":"Male","level":"Primary","category":"SED","lat":32.42041,"lng":72.45289},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL NORTH (MALE)","name":"38210377 - GPS CHHAB","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.620061,"lng":72.525761},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL EAST (MALE)","name":"38210381 - GPS DERA ALLAH BAKHSH DHAK","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.4472597,"lng":72.5204754},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL SOUTH (MALE)","name":"38210382 - GPS DERA BAKHWAL KATHA SAGHRAL","gender":"Male","level":"Primary","category":"SED","lat":32.53772,"lng":72.468385},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL SOUTH (MALE)","name":"38210383 - GPS DERA BURHAN WALA","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.525611,"lng":72.538116},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL SOUTH (MALE)","name":"38210384 - GPS DERA GUNADHA KATHA SAGHRAL","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.5,"lng":72.48},{"tehsil":"KHUSHAB","markaz":"KHUSHAB NORTH (MALE)","name":"38210385 - GPS DERA HAITAM KHAN","gender":"Male","level":"Primary","category":"SED","lat":32.397992,"lng":72.419102},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL WEST (MALE)","name":"38210386 - GPS DERA JALKIAL","gender":"Male","level":"Primary","category":"SED","lat":32.43819,"lng":72.36984},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD NORTH (MALE)","name":"38210387 - GPS DERA KANDAN","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.40043,"lng":72.345977},{"tehsil":"KHUSHAB","markaz":"KHUSHAB NORTH (MALE)","name":"38210389 - GPS DERA KHIZAR HAYAT","gender":"Male","level":"Primary","category":"SED","lat":32.39978,"lng":72.50291},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL WEST (MALE)","name":"38210390 - GPS DERA LUNDOO","gender":"Male","level":"Primary","category":"SED","lat":32.425058,"lng":72.339017},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL EAST (MALE)","name":"38210391 - GPS DERA MEHRAY WALA JASWAL","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.476397,"lng":72.605591},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL EAST (MALE)","name":"38210392 - GPS DERA MIAN KHAN TALOKAR","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.443923,"lng":72.502483},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL SOUTH (MALE)","name":"38210394 - GPS DERA WARIS","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.555098,"lng":72.56267},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL NORTH (MALE)","name":"38210396 - GPS DHERI","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.642784,"lng":72.491384},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL SOUTH (MALE)","name":"38210397 - GPS DHOK ALLAH BAKSHS","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.555831,"lng":72.563923},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL SOUTH (MALE)","name":"38210399 - GPS DHOK MEHRWAL","gender":"Male","level":"Primary","category":"SED","lat":32.57132,"lng":72.54998},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL SOUTH (MALE)","name":"38210400 - GPS DHOK PIRHAL","gender":"Male","level":"Primary","category":"SED","lat":32.570312,"lng":72.51034},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL SOUTH (MALE)","name":"38210401 - GPS DHOK SANGHAY","gender":"Male","level":"Primary","category":"SED","lat":32.539081,"lng":72.485793},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL SOUTH (MALE)","name":"38210402 - GPS DHOK JHAGRA","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.547267,"lng":72.522578},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL WEST (MALE)","name":"38210403 - GPS FAZAL HAQ KALRI KHUSHAB","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.549917,"lng":72.352793},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL EAST (MALE)","name":"38210405 - GPS RAJA MUHAMMAD QASIM MEHBOOB SHAHEED","gender":"Male","level":"Primary","category":"SED","lat":32.4068654,"lng":72.5200623},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL NORTH (MALE)","name":"38210407 - GPS KADHAR","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.64398,"lng":72.47599},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL SOUTH (MALE)","name":"38210408 - GPS KATHA SAGHRAL","gender":"Male","level":"Primary","category":"SED","lat":32.511407,"lng":72.440054},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL NORTH (MALE)","name":"38210410 - GES KUPPER","gender":"Male","level":"Middle","category":"SED","lat":32.6153674,"lng":72.5330737},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL WEST (MALE)","name":"38210411 - GES MALWAL","gender":"Male","level":"Middle","category":"SED","lat":32.50521,"lng":72.37242},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL WEST (MALE)","name":"38210412 - GPS NALLI GHARBI","gender":"Male","level":"Primary","category":"SED","lat":32.486912,"lng":72.317364},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL WEST (MALE)","name":"38210414 - GPS NAWAN LOK KATHA SAGHRAL","gender":"Male","level":"Primary","category":"SED","lat":32.50432,"lng":72.44407},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL NORTH (MALE)","name":"38210415 - GPS NO 2 PAIL","gender":"Male","level":"Primary","category":"SED","lat":32.633609,"lng":72.4600944},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD EAST (MALE)","name":"38210416 - GPS NOORI NARI","gender":"Male","level":"Primary","category":"SED","lat":32.467397,"lng":72.413127},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL NORTH (MALE)","name":"38210417 - GPS NO. 2 PADHRAR","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.646863,"lng":72.513315},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL NORTH (MALE)","name":"38210418 - GPS NO. 1 PADHRAR","gender":"Male","level":"Primary","category":"SED","lat":32.658032,"lng":72.498113},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL NORTH (MALE)","name":"38210419 - GES NO. 1 PAIL","gender":"Male","level":"Middle","category":"SED","lat":32.6344363,"lng":72.4600247},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL NORTH (MALE)","name":"38210420 - GPS PIRHA","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.651159,"lng":72.442224},{"tehsil":"KHUSHAB","markaz":"RODA SOUTH (MALE)","name":"38210423 - GPS ALI KHAN KHAIL","gender":"Male","level":"Primary","category":"SED","lat":32.050058,"lng":72.027362},{"tehsil":"KHUSHAB","markaz":"RODA SOUTH (MALE)","name":"38210424 - GPS ALI PUR RODA","gender":"Male","level":"Primary","category":"SED","lat":32.075992,"lng":72.105372},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SADAR (MALE)","name":"38210425 - GES BOLA","gender":"Male","level":"Middle","category":"SED","lat":32.330223,"lng":72.250234},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA WEST (MALE)","name":"38210426 - GPS CANAL COLONY MITHA TIWANA","gender":"Male","level":"Primary","category":"SED","lat":32.25359,"lng":72.10963},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA SADAR (MALE)","name":"38210427 - GPS CHAK NO. 42 MB","gender":"Male","level":"Primary","category":"SED","lat":32.23851,"lng":72.15117},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA SADAR (MALE)","name":"38210428 - GPS CHAK NO. 43 MB","gender":"Male","level":"Primary","category":"SED","lat":32.23559,"lng":72.17261},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA SADAR (MALE)","name":"38210430 - GPS CHAK NO. 41 MB","gender":"Male","level":"Primary","category":"SED","lat":32.22945,"lng":72.15718},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA SADAR (MALE)","name":"38210431 - GPS DERA AFZAL BHAIL","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.175673,"lng":72.136423},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF NORTH (MALE)","name":"38210432 - GPS DERA BHASEEN","gender":"Male","level":"Primary","category":"SED","lat":32.3847799,"lng":72.2408359},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA WEST (MALE)","name":"38210433 - GPS DERA FEROZ HAMDI","gender":"Male","level":"Primary","category":"SED","lat":32.2519,"lng":72.11763},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA SADAR (MALE)","name":"38210434 - GPS DHLIAN WALA","gender":"Male","level":"Primary","category":"SED","lat":32.260688,"lng":72.091831},{"tehsil":"KHUSHAB","markaz":"RODA SOUTH (MALE)","name":"38210435 - GPS DHORI LUKOO","gender":"Male","level":"Primary","category":"SED","lat":32.075634,"lng":72.104031},{"tehsil":"KHUSHAB","markaz":"RODA NORTH (MALE)","name":"38210436 - GPS DHEEDIAN WALA","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.112359,"lng":72.172526},{"tehsil":"KHUSHAB","markaz":"RODA NORTH (MALE)","name":"38210437 - GPS DOST MUHAMMAD AWAN","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.069608,"lng":72.093293},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SADAR (MALE)","name":"38210440 - GES NO. 2 HADALI","gender":"Male","level":"Middle","category":"SED","lat":32.286214,"lng":72.196276},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA WEST (MALE)","name":"38210441 - GPS JHUGI MANDAY","gender":"Male","level":"Primary","category":"SED","lat":32.31151,"lng":72.1403},{"tehsil":"KHUSHAB","markaz":"RODA NORTH (MALE)","name":"38210442 - GPS KHAKHAN WALA","gender":"Male","level":"Primary","category":"SED","lat":32.01066992,"lng":72.11715393},{"tehsil":"KHUSHAB","markaz":"RODA SOUTH (MALE)","name":"38210443 - GPS LOHARAN WALA","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.083501,"lng":72.044378},{"tehsil":"KHUSHAB","markaz":"RODA NORTH (MALE)","name":"38210444 - GES MAMKAN WALA","gender":"Male","level":"Middle","category":"SED","lat":32.09501729,"lng":72.04997163},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SOUTH (MALE)","name":"38210447 - GPS MUHAMMAD BIN QASIM COLONY","gender":"Male","level":"Primary","category":"SED","lat":32.24915,"lng":72.24762},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA EAST (MALE)","name":"38210448 - GPS MUHAMMAD KHAIL","gender":"Male","level":"Primary","category":"SED","lat":32.10064,"lng":72.17989},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SADAR (MALE)","name":"38210449 - GPS NO. 1 HADALI","gender":"Male","level":"Primary","category":"SED","lat":32.2947,"lng":72.1849},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SADAR (MALE)","name":"38210450 - GPS NO. 4 SARFRAZ COLONY JAUHARABAD","gender":"Male","level":"Primary","category":"SED","lat":32.29311,"lng":72.251363},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA SADAR (MALE)","name":"38210451 - GPS NO. 1 MITHA TIWANA","gender":"Male","level":"Primary","category":"SED","lat":32.24226,"lng":72.110762},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SADAR (MALE)","name":"38210452 - GPS NO. 3 HADALI","gender":"Male","level":"Primary","category":"SED","lat":32.2968112,"lng":72.1973289},{"tehsil":"KHUSHAB","markaz":"RODA NORTH (MALE)","name":"38210455 - GPS RAMZAN RODA","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.07462526,"lng":72.09608216},{"tehsil":"KHUSHAB","markaz":"RODA SOUTH (MALE)","name":"38210456 - GPS RATTA WALA","gender":"Male","level":"Primary","category":"SED","lat":32.031527,"lng":72.146407},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA SADAR (MALE)","name":"38210457 - GPS SHALOLIAN WALA","gender":"Male","level":"Primary","category":"SED","lat":32.19772,"lng":72.11654},{"tehsil":"KHUSHAB","markaz":"RODA SOUTH (MALE)","name":"38210458 - GPS SHEIKH AHMAD","gender":"Male","level":"Primary","category":"SED","lat":32.07368,"lng":72.024582},{"tehsil":"KHUSHAB","markaz":"RODA SOUTH (MALE)","name":"38210459 - GPS SOHARAY WALA","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.072676,"lng":72.190296},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF SOUTH (MALE)","name":"38210460 - GES SULTAN PUR ANGRA","gender":"Male","level":"Middle","category":"SED","lat":32.3613358,"lng":72.3020671},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA EAST (MALE)","name":"38210461 - GPS UMEED ALI VIRK","gender":"Male","level":"Primary","category":"SED","lat":32.07338,"lng":72.18237},{"tehsil":"KHUSHAB","markaz":"RODA NORTH (MALE)","name":"38210463 - GPS ZAMA KHAKH","gender":"Male","level":"Primary","category":"SED","lat":32.11835831,"lng":72.12762192},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA EAST (MALE)","name":"38210464 - GPS ZAMAN COLONY","gender":"Male","level":"Primary","category":"SED","lat":32.25422,"lng":72.24783},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF SOUTH (MALE)","name":"38210465 - GPS BASTI DARHAL","gender":"Male","level":"Primary","category":"SED","lat":32.2957241,"lng":72.1473518},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF NORTH (MALE)","name":"38210467 - GPS BUTTAY WALA","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.353881,"lng":72.164339},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF NORTH (MALE)","name":"38210490 - GPS DARANWALA","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.365031,"lng":72.088454},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF SOUTH (MALE)","name":"38210491 - GPS DERA KALWAL","gender":"Male","level":"Primary","category":"SED","lat":32.3540207,"lng":72.1240262},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA WEST (MALE)","name":"38210492 - GPS DERA SULEMAN BIJAR","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.28192,"lng":72.0619},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF SOUTH (MALE)","name":"38210493 - GPS DERA TIWANA WALA","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.31437,"lng":72.060364},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF SOUTH (MALE)","name":"38210494 - GPS DHOK MIR DEH","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.332145,"lng":72.115108},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF SOUTH (MALE)","name":"38210495 - GPS DHOK CHOHAK","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.2957241,"lng":72.1473518},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF SOUTH (MALE)","name":"38210496 - GPS FALAK SHER","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.301199,"lng":72.053298},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF SOUTH (MALE)","name":"38210497 - GPS HEROO (ASP)","gender":"Male","level":"Primary","category":"SED","lat":32.2982454,"lng":72.1269883},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF NORTH (MALE)","name":"38210498 - GPS JABBI GHARBI","gender":"Male","level":"Primary","category":"SED","lat":32.389037,"lng":72.1026271},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA WEST (MALE)","name":"38210502 - GPS KOTHI NAWAB","gender":"Male","level":"Primary","category":"SED","lat":32.29591,"lng":72.05496},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF NORTH (MALE)","name":"38210504 - GPS NANGAH","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.496508,"lng":72.056623},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF NORTH (MALE)","name":"38210505 - GPS PERA KAMALIN WALA","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.468621,"lng":72.081051},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF NORTH (MALE)","name":"38210509 - GPS SATRA KAWAD","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.45834,"lng":72.12901},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA WEST (MALE)","name":"38210510 - GPS SHADADAN","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.145792,"lng":72.028155},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA WEST (MALE)","name":"38210511 - GPS SHAIKHU","gender":"Male","level":"Primary","category":"SED","lat":32.25555,"lng":72.00952},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF SOUTH (MALE)","name":"38210513 - GPS TUNNIAN WALI","gender":"Male","level":"Primary","category":"SED","lat":32.3042541,"lng":72.1258775},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF SOUTH (MALE)","name":"38210514 - GPS UCHI SAYEDAN","gender":"Male","level":"Primary","category":"SED","lat":32.304,"lng":72.076},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF SOUTH (MALE)","name":"38210792 - GES BASTI SHER WALI","gender":"Male","level":"Middle","category":"SED","lat":32.2957241,"lng":72.1473518},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD NORTH (MALE)","name":"38210793 - GES KUND","gender":"Male","level":"Middle","category":"SED","lat":32.41134,"lng":72.207721},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD EAST (MALE)","name":"38210808 - GES CHAK NO. 59 MB","gender":"Male","level":"Middle","category":"SED","lat":32.354078,"lng":72.343059},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SOUTH (MALE)","name":"38210809 - GES DERA ABDUL ALI SHAH MOHIB PUR","gender":"Male","level":"Middle","category":"SED","lat":32.1318883,"lng":72.272093},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SADAR (MALE)","name":"38210814 - GES NO. 3 JAUHARABAD","gender":"Male","level":"Middle","category":"SED","lat":32.274838,"lng":72.272352},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA EAST (MALE)","name":"38210815 - GES WATOO","gender":"Male","level":"Middle","category":"SED","lat":32.02398,"lng":72.23282},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL WEST (MALE)","name":"38210829 - GES KATHA MISRAL","gender":"Male","level":"Middle","category":"SED","lat":32.53067,"lng":72.42336},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL NORTH (MALE)","name":"38210830 - GES KURAR","gender":"Male","level":"Middle","category":"SED","lat":32.477833,"lng":72.488952},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL SOUTH (MALE)","name":"38210831 - GES MANGWAL","gender":"Male","level":"Middle","category":"SED","lat":32.538232,"lng":72.572379},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA WEST (MALE)","name":"38210832 - GES BOTALA","gender":"Male","level":"Middle","category":"SED","lat":32.2669,"lng":72.13664},{"tehsil":"KHUSHAB","markaz":"RODA SOUTH (MALE)","name":"38210833 - GES LUKOO","gender":"Male","level":"Middle","category":"SED","lat":32.047746,"lng":72.079962},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA SADAR (MALE)","name":"38210834 - GES MITHA TIWANA","gender":"Male","level":"Middle","category":"SED","lat":32.24478,"lng":72.10438},{"tehsil":"KHUSHAB","markaz":"RODA NORTH (MALE)","name":"38210835 - GES TAHIR WALA","gender":"Male","level":"Middle","category":"SED","lat":32.07503209,"lng":72.12504331},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF NORTH (MALE)","name":"38210838 - GES CHANKI","gender":"Male","level":"Middle","category":"SED","lat":32.385361,"lng":72.116985},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF NORTH (MALE)","name":"38210839 - GES DHOK MEER AHMED","gender":"Male","level":"Middle","category":"SED","lat":32.340563,"lng":72.137874},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA WEST (MALE)","name":"38210840 - GES PANJA","gender":"Male","level":"Middle","category":"SED","lat":32.23186,"lng":72.06188},{"tehsil":"KHUSHAB","markaz":"RODA NORTH (MALE)","name":"38210962 - GPS JAMALIAN WALA","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.12663232,"lng":71.99067704},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL EAST (MALE)","name":"38210963 - GPS DERA MAKHANA","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.480383,"lng":72.613778},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA WEST (MALE)","name":"38210969 - GPS NAHR PUL KAMRAY WALA","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.21395,"lng":71.98524},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA WEST (MALE)","name":"38210970 - GPS DERA KHUDA YAR RATIAL","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.164015,"lng":72.007429},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA EAST (MALE)","name":"38210973 - GPS REHMAN COLONY","gender":"Male","level":"Primary","category":"SED","lat":32.275541,"lng":72.256779},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF SOUTH (MALE)","name":"38210976 - GPS PUL JABBI","gender":"Male","level":"Primary","category":"PSRP-III","lat":32.318182,"lng":72.111586},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA WEST (MALE)","name":"38210978 - GPS DERA ISHAQUE MAHAL MITHA TIWANA","gender":"Male","level":"Primary","category":"PSRP-III","lat":32.279516,"lng":72.083227}];
-
-    // Default Conota Settings Specification
-    const DEFAULT_CONOTA_SETTINGS = {
-      showLabels: false,         // No headings/labels by default
-      coordsPrefix: false,       // No WGS84: prefix
-      position: 'bottom-left',   // 'bottom-left', 'bottom-right', 'top-left', 'top-right'
-      fontSizeLevel: 5,          // 1 to 10 (scales font from 1.2% to 3.5% of Math.min(w,h))
-      fontColor: '#ffffff',      // Hex color
-      showBg: true,              // Dark grey backing container
-      bgOpacityLevel: 3,         // 1: 85%, 2: 68%, 3: 50%, 4: 36%, 5: 22%
-      jpegQuality: 95,           // 50 to 100
-      fieldOrder: ['markaz', 'project', 'datetime', 'coords', 'notes'],
-      fieldsEnabled: {
-        markaz: true,
-        project: true,
-        datetime: true,
-        coords: true,
-        notes: false
-      }
-    };
-
-    // Application State
-    const state = {
-      imageSource: null,        // ImageBitmap or HTMLImageElement
-      originalWidth: 0,
-      originalHeight: 0,
-      currentTemplate: 1,       // 1: Conota Compact, 2: Field Box, 3: Minimal, 4: Split, 5: Digital
-      mode: 'auto',             // 'auto' or 'manual'
-      date: '',                 // YYYY-MM-DD
-      time: '',                 // HH:MM:SS
-      lat: null,
-      lon: null,
-      projectName: '',          // Project / School Name
-      markaz: '',               // Markaz / Sub-area
-      note: '',                 // Custom Notes
-      address: '',              // Fallback Location
-      isGeolocating: false,
-      schoolsList: [],          // Array of Khushab schools
-      selectedSchool: null,     // Currently selected school object
-      currentOffsetDistance: 0, // Last generated 1-5m jitter distance in meters
-      settings: JSON.parse(JSON.stringify(DEFAULT_CONOTA_SETTINGS))
-    };
-
-    // DOM Elements Cache
-    const elements = {
-      fileInput: document.getElementById('fileInput'),
-      cameraInput: document.getElementById('cameraInput'),
-      emptyState: document.getElementById('emptyState'),
-      previewCanvas: document.getElementById('previewCanvas'),
-      changePhotoBar: document.getElementById('changePhotoBar'),
-      imageResolutionBadge: document.getElementById('imageResolutionBadge'),
-      canvasStatusBadge: document.getElementById('canvasStatusBadge'),
-      quickBarPos: document.getElementById('quickBarPos'),
-      quickBarOpacity: document.getElementById('quickBarOpacity'),
-      btnModeAuto: document.getElementById('btnModeAuto'),
-      btnModeManual: document.getElementById('btnModeManual'),
-      gpsStatusBanner: document.getElementById('gpsStatusBanner'),
-      gpsIndicator: document.getElementById('gpsIndicator'),
-      gpsStatusText: document.getElementById('gpsStatusText'),
-      schoolSearchCard: document.getElementById('schoolSearchCard'),
-      schoolSearchInput: document.getElementById('schoolSearchInput'),
-      schoolDropdown: document.getElementById('schoolDropdown'),
-      btnClearSearch: document.getElementById('btnClearSearch'),
-      btnSyncSchools: document.getElementById('btnSyncSchools'),
-      schoolsCountText: document.getElementById('schoolsCountText'),
-      selectedSchoolBadge: document.getElementById('selectedSchoolBadge'),
-      selectedSchoolNameText: document.getElementById('selectedSchoolNameText'),
-      selectedSchoolMetaText: document.getElementById('selectedSchoolMetaText'),
-      btnShuffleJitter: document.getElementById('btnShuffleJitter'),
-      jitterBadge: document.getElementById('jitterBadge'),
-      inputDate: document.getElementById('inputDate'),
-      inputTime: document.getElementById('inputTime'),
-      inputLat: document.getElementById('inputLat'),
-      inputLon: document.getElementById('inputLon'),
-      inputProject: document.getElementById('inputProject'),
-      inputMarkaz: document.getElementById('inputMarkaz'),
-      inputNote: document.getElementById('inputNote'),
-      inputAddress: document.getElementById('inputAddress'),
-      btnSave: document.getElementById('btnSave'),
-      btnShare: document.getElementById('btnShare'),
-      mapModal: document.getElementById('mapModal'),
-      mapSelectedCoords: document.getElementById('mapSelectedCoords'),
-      mapSelectedAddressPreview: document.getElementById('mapSelectedAddressPreview'),
-      offlineMapBanner: document.getElementById('offlineMapBanner'),
-      toast: document.getElementById('toastNotification'),
-      toastText: document.getElementById('toastText'),
-      // Settings Modal Elements
-      settingsModal: document.getElementById('settingsModal'),
-      settingShowLabels: document.getElementById('settingShowLabels'),
-      settingCoordsPrefix: document.getElementById('settingCoordsPrefix'),
-      settingFontSize: document.getElementById('settingFontSize'),
-      fontSizeBadge: document.getElementById('fontSizeBadge'),
-      settingCustomColor: document.getElementById('settingCustomColor'),
-      fontColorText: document.getElementById('fontColorText'),
-      settingShowBg: document.getElementById('settingShowBg'),
-      settingBgOpacity: document.getElementById('settingBgOpacity'),
-      opacityBadge: document.getElementById('opacityBadge'),
-      opacityControlWrap: document.getElementById('opacityControlWrap'),
-      fieldOrderContainer: document.getElementById('fieldOrderContainer'),
-      settingQuality: document.getElementById('settingQuality'),
-      qualityBadge: document.getElementById('qualityBadge')
-    };
-
-    // Leaflet map instance variables
-    let leafletMap = null;
-    let leafletMarker = null;
-    let tempMapLat = 32.469908;
-    let tempMapLon = 72.202013;
-    let tempMapAddress = '';
-
-    // ==========================================
-    // INITIALIZATION & LIFECYCLE
-    // ==========================================
-    window.addEventListener('DOMContentLoaded', () => {
-      initSchoolsData();
-      loadSavedPreferences();
-      initDateTimeDefaults();
-      syncSettingsToUI();
-      renderOrderList();
-      fetchAutoData(false);
-
-      // File input listeners (Gallery & Camera)
-      elements.fileInput.addEventListener('change', handleFileSelect);
-      elements.cameraInput.addEventListener('change', handleFileSelect);
-
-      // School search autocomplete listeners
-      elements.schoolSearchInput.addEventListener('input', (e) => handleSchoolSearchInput(e.target.value));
-      elements.schoolSearchInput.addEventListener('focus', (e) => handleSchoolSearchInput(e.target.value));
-
-      // Close school dropdown when tapping outside
-      document.addEventListener('click', (e) => {
-        if (!elements.schoolSearchCard.contains(e.target)) {
-          elements.schoolDropdown.style.display = 'none';
-        }
-      });
-
-      // Web Share API check
-      if (!navigator.canShare) {
-        elements.btnShare.style.display = 'none';
-      }
-    });
-
-    /**
-     * Initialize Schools Dataset & Sync with GitHub Pages
-     */
-    function initSchoolsData() {
-      try {
-        const cached = localStorage.getItem('photo_stamp_schools_khushab');
-        if (cached) {
-          const parsed = JSON.parse(cached);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            state.schoolsList = parsed;
-          }
-        }
-      } catch (e) {
-        console.warn('Error reading schools from localStorage:', e);
-      }
-
-      if (!state.schoolsList || state.schoolsList.length === 0) {
-        state.schoolsList = EMBEDDED_KHUSHAB_SCHOOLS;
-      }
-
-      updateSchoolsCountBadge(state.schoolsList.length);
-
-      if (navigator.onLine) {
-        syncSchoolsData(false);
-      }
-    }
-
-    function updateSchoolsCountBadge(count) {
-      elements.schoolsCountText.textContent = `${count} Schools`;
-    }
-
-    /**
-     * Fetch & Cache School Data from GitHub Pages
-     */
-    async function syncSchoolsData(showFeedback = true) {
-      elements.btnSyncSchools.classList.add('spinning');
-
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 8000);
-
-        const url = 'https://elixirlinnet.github.io/Schools-Mapping-System-by-ASiM/schools.csv';
-        const res = await fetch(url, { signal: controller.signal, cache: 'no-cache' });
-        clearTimeout(timeoutId);
-
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const csvText = await res.text();
-        const parsed = parseSchoolsCsv(csvText);
-
-        if (parsed.length > 0) {
-          state.schoolsList = parsed;
-          localStorage.setItem('photo_stamp_schools_khushab', JSON.stringify(parsed));
-          updateSchoolsCountBadge(parsed.length);
-          if (showFeedback) showToast(`Synced ${parsed.length} Khushab schools from GitHub!`);
-        } else {
-          throw new Error('No Tehsil Khushab schools parsed from CSV');
-        }
-      } catch (err) {
-        console.warn('Sync from GitHub failed, falling back to local cached dataset:', err);
-        if (showFeedback) {
-          showToast(`Using ${state.schoolsList.length} cached Khushab schools (Offline)`);
-        }
-      } finally {
-        elements.btnSyncSchools.classList.remove('spinning');
-      }
-    }
-
-    /**
-     * Parse CSV and filter strictly for TEHSIL KHUSHAB
-     */
-    function parseSchoolsCsv(csvText) {
-      const lines = csvText.split(/\r?\n/).filter(l => l.trim().length > 0);
-      const schools = [];
-      for (let i = 1; i < lines.length; i++) {
-        const parts = lines[i].split(',');
-        if (parts.length >= 8) {
-          const tehsil = parts[0].trim().toUpperCase();
-          if (tehsil === 'KHUSHAB') {
-            const lat = parseFloat(parts[6].trim());
-            const lng = parseFloat(parts[7].trim());
-            if (!isNaN(lat) && !isNaN(lng)) {
-              schools.push({
-                tehsil: parts[0].trim(),
-                markaz: parts[1].trim(),
-                name: parts[2].trim(),
-                gender: parts[3].trim(),
-                level: parts[4].trim(),
-                category: parts[5].trim(),
-                lat: lat,
-                lng: lng
-              });
-            }
-          }
-        }
-      }
-      return schools;
-    }
-
-    /**
-     * School Search & Autocomplete
-     */
-    function handleSchoolSearchInput(query) {
-      const q = (query || '').trim().toLowerCase();
-      elements.btnClearSearch.style.display = q.length > 0 ? 'flex' : 'none';
-
-      const matches = state.schoolsList.filter(s => {
-        if (!q) return true;
-        return s.name.toLowerCase().includes(q) || 
-               s.markaz.toLowerCase().includes(q) || 
-               (s.category && s.category.toLowerCase().includes(q));
-      }).slice(0, 40);
-
-      if (matches.length === 0) {
-        elements.schoolDropdown.innerHTML = '<div style="padding: 12px; color: #94a3b8; font-size: 0.8rem; text-align: center;">No matching schools found in Tehsil Khushab</div>';
-        elements.schoolDropdown.style.display = 'block';
-        return;
-      }
-
-      elements.schoolDropdown.innerHTML = matches.map((s, idx) => `
-        <div class="school-item" data-index="${idx}" onclick="selectSchoolByIndex(${idx})">
-          <div class="school-item-name">${escapeHtml(s.name)}</div>
-          <div class="school-item-meta">
-            <span class="meta-tag">${escapeHtml(s.markaz)}</span>
-            <span class="meta-tag">${escapeHtml(s.category || 'SED')}</span>
-            <span>${s.lat.toFixed(6)}, ${s.lng.toFixed(6)}</span>
-          </div>
-        </div>
-      `).join('');
-
-      window._currentFilteredSchools = matches;
-      elements.schoolDropdown.style.display = 'block';
-    }
-
-    function selectSchoolByIndex(index) {
-      if (!window._currentFilteredSchools || !window._currentFilteredSchools[index]) return;
-      const school = window._currentFilteredSchools[index];
-      selectSchool(school);
-    }
-
-    /**
-     * Select a School:
-     * - Populates Project/School Name and Markaz
-     * - Applies 1 to 5 meter random offset to coordinates
-     */
-    function selectSchool(school) {
-      state.selectedSchool = school;
-      elements.schoolSearchInput.value = school.name;
-      elements.schoolDropdown.style.display = 'none';
-
-      // Set School Name & Markaz
-      state.projectName = school.name;
-      state.markaz = school.markaz;
-      state.address = `${school.name}, ${school.markaz}, KHUSHAB`;
-
-      elements.inputProject.value = state.projectName;
-      elements.inputMarkaz.value = state.markaz;
-      elements.inputAddress.value = state.address;
-
-      // Apply Random 1 to 5 meter GPS Offset
-      applyGpsOffsetToSchool(school.lat, school.lng);
-
-      // Display Active Selected School Badge
-      elements.selectedSchoolNameText.textContent = school.name;
-      elements.selectedSchoolMetaText.textContent = `${school.markaz} • Base: ${school.lat.toFixed(6)}, ${school.lng.toFixed(6)}`;
-      elements.selectedSchoolBadge.style.display = 'flex';
-
-      setDataMode('manual', false);
-      redrawPreview();
-      showToast(`${school.name} selected (+ ${state.currentOffsetDistance}m offset applied)`);
-    }
-
-    function clearSchoolSearchInput() {
-      elements.schoolSearchInput.value = '';
-      elements.btnClearSearch.style.display = 'none';
-      handleSchoolSearchInput('');
-      elements.schoolSearchInput.focus();
-    }
-
-    function clearSelectedSchool() {
-      state.selectedSchool = null;
-      elements.selectedSchoolBadge.style.display = 'none';
-      elements.schoolSearchInput.value = '';
-      elements.btnClearSearch.style.display = 'none';
-      elements.jitterBadge.textContent = '±0.0m';
-      showToast('School selection cleared');
-    }
-
-    /**
-     * Random 1 to 5 Meter GPS Offset (Jitter) Logic
-     */
-    function calculateGpsOffset(baseLat, baseLon) {
-      const distance = 1 + (Math.random() * 4); // 1 to 5 meters
-      const angle = Math.random() * 2 * Math.PI; // 0 to 360 deg
-      const deltaLat = (distance * Math.cos(angle)) / 111320;
-      const deltaLon = (distance * Math.sin(angle)) / (111320 * Math.cos(baseLat * Math.PI / 180));
-
-      const finalLat = parseFloat((baseLat + deltaLat).toFixed(6));
-      const finalLon = parseFloat((baseLon + deltaLon).toFixed(6));
-      return {
-        lat: finalLat,
-        lon: finalLon,
-        distance: distance.toFixed(1)
-      };
-    }
-
-    function applyGpsOffsetToSchool(baseLat, baseLon, showToastMsg = false) {
-      const offset = calculateGpsOffset(baseLat, baseLon);
-      state.lat = offset.lat;
-      state.lon = offset.lon;
-      state.currentOffsetDistance = offset.distance;
-
-      elements.inputLat.value = state.lat;
-      elements.inputLon.value = state.lon;
-      elements.jitterBadge.textContent = `±${offset.distance}m`;
-
-      if (showToastMsg) {
-        showToast(`🔀 New ${offset.distance}m offset applied`);
-      }
-    }
-
-    function shuffleGpsJitter() {
-      if (state.selectedSchool) {
-        applyGpsOffsetToSchool(state.selectedSchool.lat, state.selectedSchool.lng, true);
-      } else {
-        const curLat = parseFloat(elements.inputLat.value) || 32.469908;
-        const curLon = parseFloat(elements.inputLon.value) || 72.202013;
-        applyGpsOffsetToSchool(curLat, curLon, true);
-      }
-      redrawPreview();
-    }
-
-    function onCoordinatesManuallyEdited() {
-      state.lat = elements.inputLat.value ? parseFloat(elements.inputLat.value) : null;
-      state.lon = elements.inputLon.value ? parseFloat(elements.inputLon.value) : null;
-      elements.jitterBadge.textContent = 'Manual';
-      redrawPreview();
-    }
-
-    /**
-     * Load & Save Preferences
-     */
-    function loadSavedPreferences() {
-      try {
-        const savedTemplate = localStorage.getItem('photo_stamp_template');
-        if (savedTemplate && [1, 2, 3, 4, 5].includes(Number(savedTemplate))) {
-          state.currentTemplate = Number(savedTemplate);
-          highlightActiveTemplate(state.currentTemplate);
-        }
-
-        const savedNote = localStorage.getItem('photo_stamp_note');
-        if (savedNote !== null && savedNote !== '') {
-          state.note = savedNote;
-          elements.inputNote.value = savedNote;
-        }
-
-        const savedProject = localStorage.getItem('photo_stamp_project');
-        if (savedProject !== null && savedProject !== '') {
-          state.projectName = savedProject;
-          elements.inputProject.value = savedProject;
-        }
-
-        const savedMarkaz = localStorage.getItem('photo_stamp_markaz');
-        if (savedMarkaz !== null && savedMarkaz !== '') {
-          state.markaz = savedMarkaz;
-          elements.inputMarkaz.value = savedMarkaz;
-        }
-
-        const savedMode = localStorage.getItem('photo_stamp_mode');
-        if (savedMode === 'manual' || savedMode === 'auto') {
-          setDataMode(savedMode, false);
-        }
-
-        // Conota Settings persistence (v2 layout: Markaz, School, DD/MM/YYYY AM/PM, Location, no headings)
-        const savedSettings = localStorage.getItem('photo_stamp_conota_settings_v2');
-        if (savedSettings) {
-          const parsed = JSON.parse(savedSettings);
-          state.settings = Object.assign({}, DEFAULT_CONOTA_SETTINGS, parsed);
-          state.settings.fieldsEnabled = Object.assign({}, DEFAULT_CONOTA_SETTINGS.fieldsEnabled, parsed.fieldsEnabled || {});
-        } else {
-          state.settings = JSON.parse(JSON.stringify(DEFAULT_CONOTA_SETTINGS));
-        }
-      } catch (e) {
-        console.warn('LocalStorage error:', e);
-      }
-    }
-
-    function saveSettings() {
-      try {
-        localStorage.setItem('photo_stamp_conota_settings_v2', JSON.stringify(state.settings));
-      } catch (e) {
-        console.warn('Error saving settings:', e);
-      }
-    }
-
-    /**
-     * Date & Time Defaults
-     */
-    function initDateTimeDefaults() {
+    function syncAutoDateTime(showFeedback = true) {
       const now = new Date();
       state.date = formatDate(now);
       state.time = formatTime(now);
 
       elements.inputDate.value = state.date;
       elements.inputTime.value = state.time;
-
-      if (!state.projectName) {
-        state.projectName = "38210008 - GPS DHOK CHAPRI";
-        elements.inputProject.value = state.projectName;
+      if (elements.dateTimeBadge) {
+        elements.dateTimeBadge.textContent = 'Device Time';
       }
-      if (!state.markaz) {
-        state.markaz = "JAUHARABAD NORTH (MALE)";
-        elements.inputMarkaz.value = state.markaz;
-      }
-      if (!state.note) {
-        state.note = "";
-        elements.inputNote.value = state.note;
-      }
-    }
 
-    function formatDate(d) {
-      const year = d.getFullYear();
-      const month = String(d.getMonth() + 1).padStart(2, '0');
-      const day = String(d.getDate()).padStart(2, '0');
-      return `${year}-${month}-${day}`;
-    }
-
-    function formatTime(d) {
-      const hours = String(d.getHours()).padStart(2, '0');
-      const minutes = String(d.getMinutes()).padStart(2, '0');
-      const seconds = String(d.getSeconds()).padStart(2, '0');
-      return `${hours}:${minutes}:${seconds}`;
+      redrawPreview();
+      if (showFeedback) {
+        showToast('Date & time synced to device clock');
+      }
     }
 
     /**
-     * Format Conota Date & Time: DD.MM.YYYY 24:00
+     * Auto GPS: Fetch Device Coordinates
+     * Leaves other fields blank if not filled, allowing user to write in them
      */
-    function formatConotaDateTime(dateStr, timeStr) {
-      let day, month, year;
-      if (dateStr && dateStr.includes('-')) {
-        const parts = dateStr.split('-');
-        year = parts[0];
-        month = parts[1].padStart(2, '0');
-        day = parts[2].padStart(2, '0');
-      } else {
-        const now = new Date();
-        day = String(now.getDate()).padStart(2, '0');
-        month = String(now.getMonth() + 1).padStart(2, '0');
-        year = String(now.getFullYear());
-      }
-
-      let hours = 0, minutes = 0;
-      if (timeStr && timeStr.includes(':')) {
-        const tParts = timeStr.split(':');
-        hours = parseInt(tParts[0], 10) || 0;
-        minutes = parseInt(tParts[1], 10) || 0;
-      } else {
-        const now = new Date();
-        hours = now.getHours();
-        minutes = now.getMinutes();
-      }
-
-      const ampm = hours >= 12 ? 'PM' : 'AM';
-      const hours12 = hours % 12 || 12;
-      const hoursFormatted = String(hours12).padStart(2, '0');
-      const minutesFormatted = String(minutes).padStart(2, '0');
-
-      return `${day}/${month}/${year} ${hoursFormatted}:${minutesFormatted} ${ampm}`;
-    }
-
-    /**
-     * Format Conota Coordinates: 32.47287, 72.48893 (with optional WGS84: or Coordinates: labels)
-     */
-    function formatConotaCoordinates(lat, lon, settings) {
-      if (lat === null || lon === null || isNaN(lat) || isNaN(lon)) {
-        return "GPS Unavailable";
-      }
-      const latStr = Number(lat).toFixed(5);
-      const lonStr = Number(lon).toFixed(5);
-      const baseStr = `${latStr}, ${lonStr}`;
-
-      if (settings.coordsPrefix) {
-        return `WGS84: ${baseStr}`;
-      }
-      if (settings.showLabels) {
-        return `Coordinates: ${baseStr}`;
-      }
-      return baseStr;
-    }
-
-    /**
-     * Mode Toggle: Auto vs Manual
-     */
-    function setDataMode(mode, triggerRedraw = true) {
-      state.mode = mode;
-      localStorage.setItem('photo_stamp_mode', mode);
-
-      if (mode === 'auto') {
-        elements.btnModeAuto.classList.add('active');
-        elements.btnModeManual.classList.remove('active');
-        elements.gpsStatusBanner.style.display = 'flex';
-        elements.schoolSearchCard.style.display = 'none';
-        fetchAutoData(true);
-      } else {
-        elements.btnModeManual.classList.add('active');
-        elements.btnModeAuto.classList.remove('active');
-        elements.gpsStatusBanner.style.display = 'none';
-        elements.schoolSearchCard.style.display = 'flex';
-      }
-
-      if (triggerRedraw) redrawPreview();
-    }
-
-    /**
-     * Fetch Auto GPS Coordinates & Address (Auto Mode)
-     */
-    function fetchAutoData(forceGPS = false) {
-      initDateTimeDefaults();
-
+    function fetchAutoGps(showFeedback = true) {
       if (!navigator.geolocation) {
-        updateGpsStatus('Geolocation not supported by device', 'error');
+        if (showFeedback) showToast('Geolocation not supported by device');
         return;
       }
 
-      state.isGeolocating = true;
-      updateGpsStatus('Detecting GPS location...', 'pending');
+      if (elements.jitterBadge) {
+        elements.jitterBadge.textContent = 'Locating...';
+      }
 
       navigator.geolocation.getCurrentPosition(
         (pos) => {
-          state.isGeolocating = false;
           state.lat = parseFloat(pos.coords.latitude.toFixed(6));
           state.lon = parseFloat(pos.coords.longitude.toFixed(6));
 
           elements.inputLat.value = state.lat;
           elements.inputLon.value = state.lon;
-          elements.jitterBadge.textContent = 'Live GPS';
+          if (elements.jitterBadge) {
+            elements.jitterBadge.textContent = 'Live GPS';
+          }
 
-          updateGpsStatus(`GPS Active: ${state.lat}, ${state.lon}`, 'ready');
-          
-          reverseGeocode(state.lat, state.lon);
+          // Do NOT overwrite school or markaz name - leave them as is
           redrawPreview();
+          if (showFeedback) {
+            showToast(`GPS acquired: ${state.lat.toFixed(5)}, ${state.lon.toFixed(5)}`);
+          }
         },
         (err) => {
-          state.isGeolocating = false;
           let msg = 'GPS signal unavailable';
           if (err.code === 1) msg = 'Location access denied';
           else if (err.code === 2) msg = 'Position unavailable';
           else if (err.code === 3) msg = 'GPS request timeout';
-          
-          updateGpsStatus(msg + ' (Enter manually)', 'error');
-          
+
+          if (elements.jitterBadge) {
+            elements.jitterBadge.textContent = 'Unavailable';
+          }
+          if (showFeedback) {
+            showToast(msg + ' (Enter manually or pick school)');
+          }
+
           if (state.lat === null) {
-            state.lat = 32.469908;
-            state.lon = 72.202013;
+            state.lat = 32.46991;
+            state.lon = 72.20201;
             elements.inputLat.value = state.lat;
             elements.inputLon.value = state.lon;
-            if (!state.address) {
-              state.address = "Khushab, Punjab, Pakistan";
-              elements.inputAddress.value = state.address;
-            }
           }
           redrawPreview();
         },
@@ -2763,11 +2272,9 @@
       );
     }
 
-    function updateGpsStatus(message, status) {
-      elements.gpsStatusText.textContent = message;
-      elements.gpsIndicator.className = 'status-indicator';
-      if (status === 'ready') elements.gpsIndicator.classList.add('ready');
-      else if (status === 'error') elements.gpsIndicator.classList.add('error');
+    function resetStampData() {
+      syncAutoDateTime(false);
+      fetchAutoGps(true);
     }
 
     /**
@@ -3848,7 +3355,7 @@
       }
 
       closeMapModal();
-      setDataMode('manual');
+      
       redrawPreview();
       showToast('Coordinates updated from map!');
     }
