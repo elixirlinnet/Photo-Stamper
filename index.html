@@ -271,22 +271,180 @@
       display: none !important;
     }
 
-    /* Action bar below preview when photo is loaded - Mobile optimized 2x2 grid */
+    /* Action bar below preview when photo is loaded */
     .change-photo-bar {
       padding: 8px 10px;
       background: rgba(17, 24, 39, 0.95);
       border-top: 1px solid var(--border-color);
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
       width: 100%;
       box-sizing: border-box;
     }
 
-    @media (min-width: 520px) {
-      .change-photo-bar {
-        grid-template-columns: repeat(4, 1fr);
+    .change-photo-bar .mini-btn {
+      flex: 1 1 calc(33.333% - 6px);
+      min-width: 90px;
+    }
+
+    @media (max-width: 420px) {
+      .change-photo-bar .mini-btn {
+        flex: 1 1 calc(50% - 6px);
       }
+    }
+
+    .btn-danger-pill {
+      color: #f87171 !important;
+      border-color: rgba(239, 68, 68, 0.35) !important;
+    }
+
+    .btn-danger-pill:hover {
+      background: rgba(239, 68, 68, 0.15) !important;
+      border-color: #ef4444 !important;
+    }
+
+    .btn-header-remove {
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #fca5a5;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s;
+    }
+
+    .btn-header-remove:hover {
+      background: rgba(239, 68, 68, 0.25);
+      color: #ffffff;
+      border-color: #ef4444;
+    }
+
+    /* Watermark Field Order Section */
+    .field-order-card {
+      grid-column: 1 / -1;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      margin-top: 6px;
+    }
+
+    .field-order-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .field-order-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .btn-reset-order {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      padding: 3px 8px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-reset-order:hover {
+      border-color: var(--accent-color);
+      color: var(--accent-color);
+    }
+
+    .field-order-hint {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .field-order-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field-order-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-secondary);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-sm);
+      padding: 7px 10px;
+      transition: background 0.2s;
+    }
+
+    .field-order-item:hover {
+      background: var(--bg-card-hover);
+    }
+
+    .field-order-item-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .field-order-item-num {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent-color);
+      font-size: 0.72rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .field-order-item-label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .field-order-item-btns {
+      display: flex;
+      gap: 4px;
+    }
+
+    .order-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 4px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+      color: var(--text-main);
+      font-size: 0.72rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+
+    .order-btn:hover:not(:disabled) {
+      border-color: var(--accent-color);
+      color: var(--accent-color);
+      background: rgba(56, 189, 248, 0.1);
+    }
+
+    .order-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
     }
 
     .mini-btn {
@@ -1275,7 +1433,15 @@
     <!-- Canvas Preview Card -->
     <section class="preview-card">
       <div class="preview-header">
-        <span>Watermark Preview</span>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span>Watermark Preview</span>
+          <button type="button" id="btnHeaderRemovePhoto" class="btn-header-remove" onclick="removeLoadedPhoto()" title="Remove current photo" style="display: none;">
+            <svg class="icon" style="width: 12px; height: 12px; fill: currentColor;" viewBox="0 0 24 24">
+              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+            </svg>
+            Remove Photo
+          </button>
+        </div>
         <span class="res-badge" id="imageResolutionBadge">Tap below to pick photo</span>
       </div>
 
@@ -1312,25 +1478,31 @@
 
       <!-- Action bar below preview when photo is loaded -->
       <div class="change-photo-bar" id="changePhotoBar" style="display: none;">
-        <button type="button" class="mini-btn" onclick="document.getElementById('fileInput').click()">
+        <button type="button" class="mini-btn" onclick="document.getElementById('fileInput').click()" title="Change photo from gallery">
           <svg class="icon" viewBox="0 0 24 24">
             <path d="M19 7v2.99s-1.99.01-2 0V7h-3s.01-1.99 0-2h3V2h2v3h3v2h-3zm-3 4V8h-3V5H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-8h-3zM5 19l3-4 2 3 3-4 4 5H5z"/>
           </svg>
           Gallery
         </button>
-        <button type="button" class="mini-btn" onclick="document.getElementById('cameraInput').click()">
+        <button type="button" class="mini-btn" onclick="document.getElementById('cameraInput').click()" title="Capture new photo from camera">
           <svg class="icon" viewBox="0 0 24 24">
             <path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/>
           </svg>
           Camera
         </button>
-        <button type="button" class="mini-btn highlight" onclick="fetchAutoGps(true)">
+        <button type="button" class="mini-btn btn-danger-pill" onclick="removeLoadedPhoto()" title="Remove current photo">
+          <svg class="icon" style="fill: #f87171;" viewBox="0 0 24 24">
+            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+          </svg>
+          Remove
+        </button>
+        <button type="button" class="mini-btn highlight" onclick="fetchAutoGps(true)" title="Auto GPS">
           <svg class="icon" viewBox="0 0 24 24">
             <path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0 0 13 3.06V1h-2v2.06A8.994 8.994 0 0 0 3.06 11H1v2h2.06A8.994 8.994 0 0 0 11 20.94V23h2v-2.06A8.994 8.994 0 0 0 20.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/>
           </svg>
           Auto GPS
         </button>
-        <button type="button" class="mini-btn highlight" onclick="syncAutoDateTime(true)">
+        <button type="button" class="mini-btn highlight" onclick="syncAutoDateTime(true)" title="Auto Time">
           <svg class="icon" viewBox="0 0 24 24">
             <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
           </svg>
@@ -1504,6 +1676,23 @@
           </label>
           <input type="text" id="inputNote" placeholder="e.g. Inspection Visit (optional)" oninput="onDataChanged()">
         </div>
+
+        <!-- Watermark Field Order Customizer -->
+        <div class="field-order-card" id="fieldOrderCard">
+          <div class="field-order-header">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <svg class="icon" style="width: 15px; height: 15px; fill: var(--accent-color);" viewBox="0 0 24 24">
+                <path d="M3 15h18v-2H3v2zm0 4h18v-2H3v2zm0-8h18V9H3v2zm0-6v2h18V5H3z"/>
+              </svg>
+              <span class="field-order-title">Watermark Field Order</span>
+            </div>
+            <button type="button" class="btn-reset-order" onclick="resetFieldOrder()" title="Restore default field order">
+              ↺ Reset
+            </button>
+          </div>
+          <p class="field-order-hint">Use ▲ / ▼ to customize the display order of fields on your watermark.</p>
+          <div class="field-order-list" id="fieldOrderList"></div>
+        </div>
       </div>
     </section>
   </main>
@@ -1595,9 +1784,10 @@
       use12HourTime: false,     // false: 19.11.2026 12:14 (sample style), true: 19/11/2026 12:14 PM
       lat: null,
       lon: null,
-      markaz: '',               // Markaz Name (Line 1)
-      projectName: '',          // Name / School Name (Line 2)
+      markaz: '',               // Markaz Name
+      projectName: '',          // Name / School Name
       note: '',                 // Custom Note
+      fieldOrder: ['markaz', 'project', 'datetime', 'coords', 'note'], // User-customizable watermark field order
       isGeolocating: false,
       schoolsList: [],          // Array of Khushab schools
       selectedSchool: null,     // Currently selected school object { name, markaz, lat, lng, ... }
@@ -1923,15 +2113,153 @@
     }
 
     function onCoordinatesManuallyEdited() {
-      state.lat = elements.inputLat.value ? parseFloat(elements.inputLat.value) : null;
-      state.lon = elements.inputLon.value ? parseFloat(elements.inputLon.value) : null;
+      const latVal = elements.inputLat.value;
+      const lonVal = elements.inputLon.value;
+      state.lat = latVal ? parseFloat(latVal) : null;
+      state.lon = lonVal ? parseFloat(lonVal) : null;
       elements.jitterBadge.textContent = 'Manual';
+
+      if (state.lat != null && state.lon != null) {
+        const nearby = checkNearbySchool(state.lat, state.lon, 30);
+        if (nearby) {
+          state.selectedSchool = nearby.school;
+          state.markaz = nearby.school.markaz;
+          state.projectName = nearby.school.name;
+
+          elements.inputMarkaz.value = state.markaz;
+          elements.inputProject.value = state.projectName;
+
+          elements.selectedSchoolNameText.textContent = nearby.school.name;
+          elements.selectedSchoolMetaText.textContent = `🎯 Auto-detected within ${nearby.distance}m • ${nearby.school.markaz}`;
+          elements.selectedSchoolBadge.style.display = 'flex';
+
+          showToast(`🎯 School auto-detected within ${nearby.distance}m: ${nearby.school.name}`);
+        }
+      }
+
       redrawPreview();
     }
 
     /**
      * Load Preferences from localStorage
      */
+        /**
+     * Watermark Field Order Manager
+     */
+    function renderFieldOrderList() {
+      const container = document.getElementById('fieldOrderList');
+      if (!container) return;
+
+      const FIELD_LABELS = {
+        markaz: 'Markaz Name',
+        project: 'School / Person Name',
+        datetime: 'Date & Time',
+        coords: 'GPS Coordinates',
+        note: 'Custom Notes'
+      };
+
+      container.innerHTML = state.fieldOrder.map((key, i) => {
+        const isFirst = i === 0;
+        const isLast = i === state.fieldOrder.length - 1;
+        const label = FIELD_LABELS[key] || key;
+        return `
+          <div class="field-order-item" data-key="${key}">
+            <div class="field-order-item-left">
+              <span class="field-order-item-num">${i + 1}</span>
+              <span class="field-order-item-label">${escapeHtml(label)}</span>
+            </div>
+            <div class="field-order-item-btns">
+              <button type="button" class="order-btn" onclick="moveFieldOrder('${key}', -1)" ${isFirst ? 'disabled' : ''} title="Move Up">▲</button>
+              <button type="button" class="order-btn" onclick="moveFieldOrder('${key}', 1)" ${isLast ? 'disabled' : ''} title="Move Down">▼</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function moveFieldOrder(key, direction) {
+      const idx = state.fieldOrder.indexOf(key);
+      if (idx === -1) return;
+      const targetIdx = idx + direction;
+      if (targetIdx < 0 || targetIdx >= state.fieldOrder.length) return;
+
+      const temp = state.fieldOrder[idx];
+      state.fieldOrder[idx] = state.fieldOrder[targetIdx];
+      state.fieldOrder[targetIdx] = temp;
+
+      localStorage.setItem('photo_stamp_field_order', JSON.stringify(state.fieldOrder));
+      renderFieldOrderList();
+      redrawPreview();
+      showToast('Field order updated');
+    }
+
+    function resetFieldOrder() {
+      state.fieldOrder = ['markaz', 'project', 'datetime', 'coords', 'note'];
+      localStorage.setItem('photo_stamp_field_order', JSON.stringify(state.fieldOrder));
+      renderFieldOrderList();
+      redrawPreview();
+      showToast('Field order restored to default');
+    }
+
+    /**
+     * Geodesic Distance (Haversine Formula) & Proximity School Detection (20-30m Radius)
+     */
+    function getHaversineDistanceMeters(lat1, lon1, lat2, lon2) {
+      const R = 6371000; // Earth radius in meters
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c;
+    }
+
+    function checkNearbySchool(lat, lon, maxDistanceMeters = 30) {
+      if (!state.schoolsList || state.schoolsList.length === 0 || lat == null || lon == null) return null;
+      let nearest = null;
+      let minDist = Infinity;
+
+      for (const s of state.schoolsList) {
+        if (typeof s.lat === 'number' && typeof s.lng === 'number') {
+          const d = getHaversineDistanceMeters(lat, lon, s.lat, s.lng);
+          if (d < minDist) {
+            minDist = d;
+            nearest = s;
+          }
+        }
+      }
+
+      if (nearest && minDist <= maxDistanceMeters) {
+        return { school: nearest, distance: Math.round(minDist) };
+      }
+      return null;
+    }
+
+    /**
+     * Remove / Clear Current Photo
+     */
+    function removeLoadedPhoto() {
+      state.imageSource = null;
+      state.originalWidth = 0;
+      state.originalHeight = 0;
+
+      elements.previewCanvas.style.display = 'none';
+      elements.emptyState.style.display = 'flex';
+      elements.changePhotoBar.style.display = 'none';
+      elements.imageResolutionBadge.textContent = 'Tap below to pick photo';
+      elements.canvasStatusBadge.textContent = 'No Photo';
+      elements.canvasStatusBadge.classList.remove('has-photo');
+
+      const btnHeaderRemove = document.getElementById('btnHeaderRemovePhoto');
+      if (btnHeaderRemove) btnHeaderRemove.style.display = 'none';
+
+      elements.fileInput.value = '';
+      elements.cameraInput.value = '';
+
+      showToast('Photo removed');
+    }
+
     function loadSavedPreferences() {
       try {
         const savedTemplate = localStorage.getItem('photo_stamp_template');
@@ -1963,9 +2291,22 @@
           state.use12HourTime = true;
           if (elements.timeFormatLabel) elements.timeFormatLabel.textContent = '12h AM/PM';
         }
+
+        const savedOrder = localStorage.getItem('photo_stamp_field_order');
+        if (savedOrder) {
+          const parsed = JSON.parse(savedOrder);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            const validKeys = ['markaz', 'project', 'datetime', 'coords', 'note'];
+            const filtered = parsed.filter(k => validKeys.includes(k));
+            validKeys.forEach(k => { if (!filtered.includes(k)) filtered.push(k); });
+            state.fieldOrder = filtered;
+          }
+        }
       } catch (e) {
         console.warn('LocalStorage error:', e);
       }
+
+      renderFieldOrderList();
     }
 
     /**
@@ -2060,9 +2401,27 @@
             elements.jitterBadge.textContent = 'Live GPS';
           }
 
-          redrawPreview();
-          if (showFeedback) {
-            showToast(`GPS acquired: ${state.lat.toFixed(5)}, ${state.lon.toFixed(5)}`);
+          // Check if live location is within 30 meters of any Khushab school
+          const nearby = checkNearbySchool(state.lat, state.lon, 30);
+          if (nearby) {
+            state.selectedSchool = nearby.school;
+            state.markaz = nearby.school.markaz;
+            state.projectName = nearby.school.name;
+
+            elements.inputMarkaz.value = state.markaz;
+            elements.inputProject.value = state.projectName;
+
+            elements.selectedSchoolNameText.textContent = nearby.school.name;
+            elements.selectedSchoolMetaText.textContent = `🎯 Auto-detected within ${nearby.distance}m • ${nearby.school.markaz}`;
+            elements.selectedSchoolBadge.style.display = 'flex';
+
+            redrawPreview();
+            showToast(`🎯 School auto-detected within ${nearby.distance}m: ${nearby.school.name}`);
+          } else {
+            redrawPreview();
+            if (showFeedback) {
+              showToast(`GPS acquired: ${state.lat.toFixed(5)}, ${state.lon.toFixed(5)}`);
+            }
           }
         },
         (err) => {
@@ -2181,6 +2540,9 @@
       elements.changePhotoBar.style.display = 'flex';
       elements.imageResolutionBadge.textContent = `${width} × ${height} px`;
       elements.canvasStatusBadge.textContent = 'Active';
+
+      const btnHeaderRemove = document.getElementById('btnHeaderRemovePhoto');
+      if (btnHeaderRemove) btnHeaderRemove.style.display = 'inline-flex';
 
       redrawPreview();
       showToast(`Loaded photo: ${width} × ${height} px`);
@@ -2454,18 +2816,20 @@
       ctx.save();
       ctx.font = `500 ${fontSize}px Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif`;
 
-      // Build lines: Markaz (Line 1), Name/School (Line 2), Date & Time (Line 3), Coordinates (Line 4), Notes (optional)
+      // Build lines dynamically based on user-configured field order
       const rawLines = [];
-      if (state.markaz && state.markaz.trim()) {
-        rawLines.push(state.markaz.trim());
-      }
-      if (state.projectName && state.projectName.trim()) {
-        rawLines.push(state.projectName.trim());
-      }
-      rawLines.push(formatStampDateTime(state.date, state.time));
-      rawLines.push(formatStampCoordinates(state.lat, state.lon));
-      if (state.note && state.note.trim()) {
-        rawLines.push(state.note.trim());
+      for (const key of state.fieldOrder) {
+        if (key === 'markaz' && state.markaz && state.markaz.trim()) {
+          rawLines.push(state.markaz.trim());
+        } else if (key === 'project' && state.projectName && state.projectName.trim()) {
+          rawLines.push(state.projectName.trim());
+        } else if (key === 'datetime') {
+          rawLines.push(formatStampDateTime(state.date, state.time));
+        } else if (key === 'coords') {
+          rawLines.push(formatStampCoordinates(state.lat, state.lon));
+        } else if (key === 'note' && state.note && state.note.trim()) {
+          rawLines.push(state.note.trim());
+        }
       }
 
       if (rawLines.length === 0) {
@@ -2533,11 +2897,13 @@
       const valFont = `500 ${fontSize}px Roboto, -apple-system, sans-serif`;
 
       const rows = [];
-      if (state.markaz) rows.push({ label: 'MARKAZ', val: state.markaz });
-      if (state.projectName) rows.push({ label: 'NAME', val: state.projectName });
-      rows.push({ label: 'TIME', val: timeStr });
-      rows.push({ label: 'GPS', val: coordText });
-      if (state.note) rows.push({ label: 'NOTE', val: state.note });
+      for (const key of state.fieldOrder) {
+        if (key === 'markaz' && state.markaz) rows.push({ label: 'MARKAZ', val: state.markaz });
+        else if (key === 'project' && state.projectName) rows.push({ label: 'NAME', val: state.projectName });
+        else if (key === 'datetime') rows.push({ label: 'TIME', val: timeStr });
+        else if (key === 'coords') rows.push({ label: 'GPS', val: coordText });
+        else if (key === 'note' && state.note) rows.push({ label: 'NOTE', val: state.note });
+      }
 
       const cardWidth = Math.min(w * 0.65, 520 * (minDim / 1000));
       const cardHeight = (pad * 2) + (rows.length * rowGap);
@@ -2587,11 +2953,13 @@
       const lineHeight = Math.round(fontSize * 1.35);
 
       const lines = [];
-      if (state.markaz) lines.push(state.markaz);
-      if (state.projectName) lines.push(state.projectName);
-      lines.push(timeStr);
-      lines.push(coordText);
-      if (state.note) lines.push(state.note);
+      for (const key of state.fieldOrder) {
+        if (key === 'markaz' && state.markaz) lines.push(state.markaz);
+        else if (key === 'project' && state.projectName) lines.push(state.projectName);
+        else if (key === 'datetime') lines.push(timeStr);
+        else if (key === 'coords') lines.push(coordText);
+        else if (key === 'note' && state.note) lines.push(state.note);
+      }
 
       ctx.save();
       ctx.textAlign = 'left';
@@ -2644,10 +3012,12 @@
 
       // Bottom left location info
       const botLines = [];
-      if (state.markaz) botLines.push(state.markaz);
-      if (state.projectName) botLines.push(state.projectName);
-      botLines.push(coordText);
-      if (state.note) botLines.push(state.note);
+      for (const key of state.fieldOrder) {
+        if (key === 'markaz' && state.markaz) botLines.push(state.markaz);
+        else if (key === 'project' && state.projectName) botLines.push(state.projectName);
+        else if (key === 'coords') botLines.push(coordText);
+        else if (key === 'note' && state.note) botLines.push(state.note);
+      }
 
       const botLineHeight = Math.round(fontSize * 1.30);
       const botHeight = (pad * 2) + (botLines.length * botLineHeight);
@@ -2686,11 +3056,13 @@
       const lineHeight = Math.round(fontSize * 1.35);
 
       const lines = [];
-      if (state.markaz) lines.push(state.markaz);
-      if (state.projectName) lines.push(state.projectName);
-      lines.push(timeStr);
-      lines.push(coordText);
-      if (state.note) lines.push(state.note);
+      for (const key of state.fieldOrder) {
+        if (key === 'markaz' && state.markaz) lines.push(state.markaz);
+        else if (key === 'project' && state.projectName) lines.push(state.projectName);
+        else if (key === 'datetime') lines.push(timeStr);
+        else if (key === 'coords') lines.push(coordText);
+        else if (key === 'note' && state.note) lines.push(state.note);
+      }
 
       ctx.save();
       ctx.textAlign = 'right';
@@ -2946,12 +3318,27 @@
       elements.inputLon.value = state.lon;
       elements.jitterBadge.textContent = 'Map Pin';
 
-      // Location / Address option removed per user preference
+      // Check if map pin is within 30 meters of any Khushab school
+      const nearby = checkNearbySchool(state.lat, state.lon, 30);
+      if (nearby) {
+        state.selectedSchool = nearby.school;
+        state.markaz = nearby.school.markaz;
+        state.projectName = nearby.school.name;
+
+        elements.inputMarkaz.value = state.markaz;
+        elements.inputProject.value = state.projectName;
+
+        elements.selectedSchoolNameText.textContent = nearby.school.name;
+        elements.selectedSchoolMetaText.textContent = `🎯 Auto-detected within ${nearby.distance}m • ${nearby.school.markaz}`;
+        elements.selectedSchoolBadge.style.display = 'flex';
+
+        showToast(`🎯 School auto-detected within ${nearby.distance}m: ${nearby.school.name}`);
+      } else {
+        showToast('Coordinates updated from map!');
+      }
 
       closeMapModal();
-      
       redrawPreview();
-      showToast('Coordinates updated from map!');
     }
 
     function closeMapModal() {
