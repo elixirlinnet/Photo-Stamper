@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
-  <title>Photo Stamp Pro - GPS & Timestamp Watermark</title>
+  <title>Photo Stamp Pro - GPS & Conota Timestamp Watermark</title>
   
   <!-- PWA & Mobile Web App Meta Tags -->
-  <meta name="theme-color" content="#0f172a">
+  <meta name="theme-color" content="#090d16">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="application-name" content="Photo Stamp">
-  <meta name="description" content="Mobile-first photo stamper with Conota-style GPS coordinates, timestamp, address and field notes at full camera resolution.">
+  <meta name="description" content="Mobile-first photo stamper with authentic Conota-style GPS coordinates, timestamp, Tehsil Khushab schools and customizable watermarks at full resolution.">
 
   <!-- Leaflet CSS for Interactive Map Picker -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
@@ -57,30 +57,32 @@
       -webkit-user-select: none;
     }
 
-    input, textarea, button {
+    input, textarea, button, select {
       user-select: auto;
       -webkit-user-select: auto;
     }
 
     /* Top Navigation Header */
     header {
-      background: rgba(17, 24, 39, 0.88);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      background: rgba(17, 24, 39, 0.90);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       position: sticky;
       top: 0;
       z-index: 50;
       border-bottom: 1px solid var(--border-color);
-      padding: 12px 16px;
+      padding: 10px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 12px;
     }
 
     .brand {
       display: flex;
       align-items: center;
       gap: 10px;
+      cursor: pointer;
     }
 
     .brand-icon {
@@ -92,6 +94,7 @@
       align-items: center;
       justify-content: center;
       box-shadow: 0 4px 14px var(--accent-glow);
+      flex-shrink: 0;
     }
 
     .brand-icon svg {
@@ -106,7 +109,7 @@
     }
 
     .brand-title {
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       font-weight: 700;
       letter-spacing: -0.3px;
       background: linear-gradient(to right, #ffffff, #e2e8f0);
@@ -115,18 +118,51 @@
     }
 
     .brand-sub {
-      font-size: 0.72rem;
+      font-size: 0.70rem;
       color: var(--text-muted);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-header-settings {
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: var(--accent-color);
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 7px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s;
+    }
+
+    .btn-header-settings:hover {
+      background: rgba(56, 189, 248, 0.22);
+      border-color: var(--accent-color);
+      transform: translateY(-1px);
     }
 
     .badge-pill {
       font-size: 0.7rem;
-      background: rgba(56, 189, 248, 0.12);
-      color: var(--accent-color);
-      padding: 3px 9px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+      padding: 4px 8px;
       border-radius: 20px;
       font-weight: 600;
-      border: 1px solid rgba(56, 189, 248, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .badge-pill.active {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border-color: rgba(16, 185, 129, 0.35);
     }
 
     /* Main Container */
@@ -233,7 +269,7 @@
     .empty-state p {
       font-size: 0.84rem;
       color: var(--text-muted);
-      max-width: 300px;
+      max-width: 320px;
       line-height: 1.4;
     }
 
@@ -268,17 +304,19 @@
 
     /* Action bar below preview when photo is loaded */
     .change-photo-bar {
-      padding: 8px 12px;
+      padding: 8px 10px;
       background: rgba(17, 24, 39, 0.95);
       border-top: 1px solid var(--border-color);
       display: flex;
-      gap: 8px;
+      gap: 6px;
+      flex-wrap: wrap;
     }
 
     .mini-btn {
-      flex: 1;
-      padding: 9px 12px;
-      font-size: 0.82rem;
+      flex: 1 1 calc(25% - 6px);
+      min-width: 80px;
+      padding: 8px 10px;
+      font-size: 0.78rem;
       font-weight: 600;
       border-radius: var(--radius-sm);
       border: 1px solid var(--border-color);
@@ -287,7 +325,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 5px;
       cursor: pointer;
       transition: background 0.2s, border-color 0.2s;
     }
@@ -297,9 +335,19 @@
       border-color: #4b5563;
     }
 
-    /* Template Selector Chips */
+    .mini-btn.highlight {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: rgba(56, 189, 248, 0.4);
+      color: var(--accent-color);
+    }
+
+    .mini-btn.highlight:hover {
+      background: rgba(56, 189, 248, 0.25);
+    }
+
+    /* Section Label */
     .section-label {
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.8px;
@@ -310,170 +358,33 @@
       justify-content: space-between;
     }
 
-    .template-scroller {
-      display: flex;
-      gap: 10px;
-      overflow-x: auto;
-      padding-bottom: 8px;
-      scrollbar-width: thin;
-      scrollbar-color: var(--border-color) transparent;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .template-scroller::-webkit-scrollbar {
-      height: 4px;
-    }
-
-    .template-scroller::-webkit-scrollbar-thumb {
-      background: var(--border-color);
-      border-radius: 4px;
-    }
-
-    .template-card {
-      flex: 0 0 auto;
-      width: 132px;
+    /* Conota Quick Settings Pill Bar */
+    .conota-quick-bar {
       background: var(--bg-card);
-      border: 2px solid transparent;
+      border: 1px solid var(--border-color);
       border-radius: var(--radius-md);
-      padding: 10px 8px;
-      cursor: pointer;
+      padding: 10px 14px;
       display: flex;
-      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .quick-bar-left {
+      display: flex;
       align-items: center;
       gap: 8px;
-      text-align: center;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
+      font-size: 0.84rem;
+      font-weight: 600;
     }
 
-    .template-card:hover {
-      background: var(--bg-card-hover);
-      transform: translateY(-2px);
-    }
-
-    .template-card.active {
-      border-color: var(--accent-color);
-      background: rgba(56, 189, 248, 0.12);
-    }
-
-    .template-card.active .template-name {
+    .quick-bar-status {
+      font-size: 0.72rem;
       color: var(--accent-color);
-      font-weight: 700;
-    }
-
-    .template-preview-mock {
-      width: 100%;
-      height: 54px;
-      background: #111827;
-      border-radius: 6px;
-      position: relative;
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.08);
-      display: flex;
-      align-items: flex-end;
-    }
-
-    /* Visual miniature mockups of the 5 templates */
-    .mock-1 {
-      background: linear-gradient(to top, rgba(0,0,0,0.9) 45%, #1e293b 45%);
-    }
-    .mock-1::before {
-      content: "";
-      position: absolute;
-      top: 55%;
-      left: 6px;
-      width: 60%;
-      height: 3px;
-      background: #38bdf8;
-      border-radius: 1px;
-    }
-    .mock-1::after {
-      content: "";
-      position: absolute;
-      top: 70%;
-      left: 6px;
-      width: 80%;
-      height: 2px;
-      background: #e2e8f0;
-      border-radius: 1px;
-    }
-
-    .mock-2 {
-      padding: 4px;
-      background: #1e293b;
-    }
-    .mock-2::after {
-      content: "";
-      display: block;
-      width: 68%;
-      height: 75%;
-      background: rgba(15, 23, 42, 0.95);
-      border: 1px solid #38bdf8;
-      border-left: 3px solid #38bdf8;
-      border-radius: 3px;
-    }
-
-    .mock-3 {
-      display: flex;
-      justify-content: flex-end;
-      align-items: flex-end;
-      padding: 5px;
-      background: #1e293b;
-    }
-    .mock-3::after {
-      content: "";
-      width: 50%;
-      height: 35%;
-      background: repeating-linear-gradient(0deg, #fff, #fff 2px, transparent 2px, transparent 5px);
-      filter: drop-shadow(0 1px 2px #000);
-    }
-
-    .mock-4 {
-      position: relative;
-      background: #1e293b;
-    }
-    .mock-4::before {
-      content: "";
-      position: absolute;
-      top: 4px;
-      right: 4px;
-      width: 40%;
-      height: 25%;
-      background: rgba(0,0,0,0.8);
-      border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-    .mock-4::after {
-      content: "";
-      position: absolute;
-      bottom: 4px;
-      left: 4px;
-      width: 50%;
-      height: 38%;
-      background: rgba(0,0,0,0.85);
-      border-radius: 3px;
-      border: 1px solid #38bdf8;
-    }
-
-    .mock-5 {
-      display: flex;
-      justify-content: flex-end;
-      align-items: flex-end;
-      padding: 6px;
-      background: #1e293b;
-    }
-    .mock-5::after {
-      content: "";
-      width: 60%;
-      height: 32%;
-      background: repeating-linear-gradient(0deg, #f59e0b, #f59e0b 2px, transparent 2px, transparent 4px);
-    }
-
-    .template-name {
-      font-size: 0.76rem;
-      font-weight: 500;
-      color: var(--text-main);
-      white-space: nowrap;
+      background: rgba(56, 189, 248, 0.12);
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-family: monospace;
     }
 
     /* Mode Switcher Segmented Control */
@@ -488,7 +399,7 @@
     .mode-btn {
       flex: 1;
       padding: 10px;
-      font-size: 0.86rem;
+      font-size: 0.84rem;
       font-weight: 600;
       background: transparent;
       border: none;
@@ -891,8 +802,8 @@
       border: 1px solid var(--border-color);
       border-radius: var(--radius-sm);
       color: var(--text-main);
-      padding: 11px 12px;
-      font-size: 0.9rem;
+      padding: 10px 12px;
+      font-size: 0.88rem;
       font-family: inherit;
       outline: none;
       transition: border-color 0.2s, box-shadow 0.2s;
@@ -921,6 +832,155 @@
 
     .btn-pick-map:hover {
       background: rgba(56, 189, 248, 0.22);
+    }
+
+    /* Template Selector Chips */
+    .template-scroller {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border-color) transparent;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .template-scroller::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    .template-scroller::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 4px;
+    }
+
+    .template-card {
+      flex: 0 0 auto;
+      width: 130px;
+      background: var(--bg-card);
+      border: 2px solid transparent;
+      border-radius: var(--radius-md);
+      padding: 10px 8px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      text-align: center;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+
+    .template-card:hover {
+      background: var(--bg-card-hover);
+    }
+
+    .template-card.active {
+      border-color: var(--accent-color);
+      background: rgba(56, 189, 248, 0.08);
+      box-shadow: 0 0 0 1px var(--accent-color), 0 4px 14px var(--accent-glow);
+    }
+
+    .template-preview-mock {
+      width: 100%;
+      height: 52px;
+      background: #0f172a;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.08);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mock-1 {
+      display: flex;
+      align-items: flex-end;
+      padding: 4px;
+    }
+    .mock-1::after {
+      content: "";
+      width: 58%;
+      height: 54%;
+      background: rgba(20, 20, 24, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+    }
+
+    .mock-2 {
+      padding: 4px;
+      background: #1e293b;
+    }
+    .mock-2::after {
+      content: "";
+      display: block;
+      width: 68%;
+      height: 75%;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid #38bdf8;
+      border-left: 3px solid #38bdf8;
+      border-radius: 3px;
+    }
+
+    .mock-3 {
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-end;
+      padding: 5px;
+      background: #1e293b;
+    }
+    .mock-3::after {
+      content: "";
+      width: 50%;
+      height: 35%;
+      background: repeating-linear-gradient(0deg, #fff, #fff 2px, transparent 2px, transparent 5px);
+      filter: drop-shadow(0 1px 2px #000);
+    }
+
+    .mock-4 {
+      position: relative;
+      background: #1e293b;
+    }
+    .mock-4::before {
+      content: "";
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 40%;
+      height: 25%;
+      background: rgba(0,0,0,0.8);
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .mock-4::after {
+      content: "";
+      position: absolute;
+      bottom: 4px;
+      left: 4px;
+      width: 50%;
+      height: 38%;
+      background: rgba(0,0,0,0.85);
+      border-radius: 3px;
+      border: 1px solid #38bdf8;
+    }
+
+    .mock-5 {
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-end;
+      padding: 6px;
+      background: #1e293b;
+    }
+    .mock-5::after {
+      content: "";
+      width: 60%;
+      height: 32%;
+      background: repeating-linear-gradient(0deg, #f59e0b, #f59e0b 2px, transparent 2px, transparent 4px);
+    }
+
+    .template-name {
+      font-size: 0.74rem;
+      font-weight: 500;
+      color: var(--text-main);
+      white-space: nowrap;
     }
 
     /* Fixed Bottom Action Dock */
@@ -1000,7 +1060,399 @@
       background: var(--bg-card-hover);
     }
 
-    /* Modal Styling for Leaflet Map */
+    /* ========================================================
+       CONOTA SETTINGS MODAL / SIDE DRAWER
+       ======================================================== */
+    .settings-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.78);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 250;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .settings-backdrop.open {
+      display: flex;
+      opacity: 1;
+    }
+
+    .settings-sheet {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border-color);
+      border-radius: 24px 24px 0 0;
+      width: 100%;
+      max-width: 680px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 -10px 40px rgba(0,0,0,0.7);
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .settings-backdrop.open .settings-sheet {
+      transform: translateY(0);
+    }
+
+    .settings-header {
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-color);
+      background: rgba(17, 24, 39, 0.95);
+    }
+
+    .settings-title-group {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .settings-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .settings-subtitle {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .settings-close-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text-muted);
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: all 0.2s;
+    }
+
+    .settings-close-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    .settings-body {
+      padding: 16px 20px 30px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .settings-group {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .settings-group-title {
+      font-size: 0.80rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--accent-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Toggle Switch Row */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 4px 0;
+    }
+
+    .toggle-label {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      flex: 1;
+    }
+
+    .toggle-label-main {
+      font-size: 0.86rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .toggle-label-sub {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    /* Switch Component */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider-round {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #374151;
+      transition: .25s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 24px;
+    }
+
+    .slider-round:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .25s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 50%;
+    }
+
+    input:checked + .slider-round {
+      background-color: var(--accent-color);
+    }
+
+    input:checked + .slider-round:before {
+      transform: translateX(20px);
+    }
+
+    /* 4-Quadrant Position Grid */
+    .position-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .position-btn {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .position-btn:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+    }
+
+    .position-btn.active {
+      border-color: var(--accent-color);
+      background: rgba(56, 189, 248, 0.12);
+      color: var(--accent-color);
+      box-shadow: 0 0 0 1px var(--accent-color);
+    }
+
+    /* Slider Row Control */
+    .slider-control-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .slider-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    .slider-val-badge {
+      font-family: monospace;
+      color: var(--accent-color);
+      font-size: 0.78rem;
+      background: rgba(56, 189, 248, 0.12);
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 6px;
+      background: #374151;
+      border-radius: 4px;
+      outline: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--accent-color);
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+      border: 2px solid #ffffff;
+    }
+
+    /* Color Selection Row */
+    .color-presets-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .color-pill {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s;
+    }
+
+    .color-pill:hover {
+      transform: scale(1.1);
+    }
+
+    .color-pill.active {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.4);
+    }
+
+    .color-picker-input {
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      border: 1px solid var(--border-color);
+      border-radius: 50%;
+      background: transparent;
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    /* Reorderable Fields List */
+    .order-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .order-item {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .order-item-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .order-item-checkbox {
+      width: 17px;
+      height: 17px;
+      accent-color: var(--accent-color);
+      cursor: pointer;
+    }
+
+    .order-item-title {
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .order-item-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-order-arrow {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      border-radius: 4px;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.78rem;
+      transition: background 0.15s;
+    }
+
+    .btn-order-arrow:hover:not(:disabled) {
+      background: rgba(56, 189, 248, 0.2);
+      color: var(--accent-color);
+    }
+
+    .btn-order-arrow:disabled {
+      opacity: 0.25;
+      cursor: not-allowed;
+    }
+
+    .settings-footer {
+      padding: 14px 20px;
+      background: rgba(17, 24, 39, 0.95);
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      gap: 10px;
+    }
+
+    /* Leaflet Modal */
     .modal-backdrop {
       position: fixed;
       top: 0;
@@ -1118,7 +1570,6 @@
       line-height: 1.35;
     }
 
-    /* Custom Leaflet SVG Pin */
     .custom-svg-pin {
       background: transparent;
       border: none;
@@ -1170,7 +1621,7 @@
 
   <!-- Top Navigation Header -->
   <header>
-    <div class="brand">
+    <div class="brand" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">
       <div class="brand-icon">
         <svg viewBox="0 0 24 24">
           <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"/>
@@ -1178,10 +1629,19 @@
       </div>
       <div class="brand-info">
         <div class="brand-title">Photo Stamp Pro</div>
-        <div class="brand-sub">Khushab Schools & GPS Watermark</div>
+        <div class="brand-sub">Conota Watermark & Khushab Schools</div>
       </div>
     </div>
-    <span class="badge-pill" id="canvasStatusBadge">No Photo</span>
+    
+    <div class="header-actions">
+      <button type="button" class="btn-header-settings" id="btnOpenSettings" onclick="openSettingsModal()" title="Customize Conota Watermark Settings">
+        <svg class="icon" style="width: 15px; height: 15px;" viewBox="0 0 24 24">
+          <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+        </svg>
+        <span>Settings</span>
+      </button>
+      <span class="badge-pill" id="canvasStatusBadge">No Photo</span>
+    </div>
   </header>
 
   <main>
@@ -1205,7 +1665,7 @@
             </svg>
           </div>
           <h3>Select Photo from Gallery</h3>
-          <p>Pick any photo from your phone or capture a new one. Full original resolution is preserved on export.</p>
+          <p>Pick any photo from your phone or capture a new one. Full original camera resolution is preserved on export.</p>
           
           <div class="empty-buttons-row">
             <button type="button" class="btn-outline" onclick="event.stopPropagation(); document.getElementById('cameraInput').click();">
@@ -1241,6 +1701,12 @@
           </svg>
           Camera
         </button>
+        <button type="button" class="mini-btn highlight" onclick="openSettingsModal()">
+          <svg class="icon" viewBox="0 0 24 24">
+            <path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/>
+          </svg>
+          Fine-Tune
+        </button>
         <button type="button" class="mini-btn" onclick="resetStampData()">
           <svg class="icon" viewBox="0 0 24 24">
             <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
@@ -1250,17 +1716,29 @@
       </div>
     </section>
 
-    <!-- 5 Built-in Stamp Templates Selector -->
+    <!-- Conota Watermark Settings Quick Action Card -->
+    <section class="conota-quick-bar">
+      <div class="quick-bar-left">
+        <span>Conota Watermark:</span>
+        <span class="quick-bar-status" id="quickBarPos">Bottom Left</span>
+        <span class="quick-bar-status" id="quickBarOpacity">Opacity 3/5</span>
+      </div>
+      <button type="button" class="btn-header-settings" onclick="openSettingsModal()" style="padding: 5px 12px;">
+        ⚙️ Settings
+      </button>
+    </section>
+
+    <!-- Stamp Templates Selector -->
     <section>
       <div class="section-label">
         <span>Stamp Templates</span>
-        <span style="font-size: 0.72rem; color: var(--accent-color);">5 Styles Available</span>
+        <span style="font-size: 0.72rem; color: var(--accent-color);">Conota Compact Default</span>
       </div>
       <div class="template-scroller" id="templateScroller">
-        <!-- Template 1: Conota Classic -->
+        <!-- Template 1: Conota Compact (Flagship default) -->
         <div class="template-card active" data-template="1" onclick="selectTemplate(1)">
           <div class="template-preview-mock mock-1"></div>
-          <span class="template-name">Conota Classic</span>
+          <span class="template-name">Conota Compact</span>
         </div>
         <!-- Template 2: Field Box -->
         <div class="template-card" data-template="2" onclick="selectTemplate(2)">
@@ -1394,19 +1872,42 @@
           <input type="number" step="any" id="inputLon" placeholder="e.g. 72.202013" oninput="onCoordinatesManuallyEdited()">
         </div>
 
+        <!-- Project / School Name Field -->
+        <div class="input-group full-width">
+          <label for="inputProject">
+            <span>Project / School Name</span>
+            <span style="font-size: 0.70rem; color: var(--accent-color);">Watermark Project: Field</span>
+          </label>
+          <input type="text" id="inputProject" placeholder="e.g. 38210008 - GPS DHOK CHAPRI" oninput="onDataChanged()">
+        </div>
+
+        <!-- Markaz / Sub-area Field -->
+        <div class="input-group full-width">
+          <label for="inputMarkaz">
+            <span>Markaz / Sub-area</span>
+            <span style="font-size: 0.70rem; color: var(--accent-color);">Watermark Markaz: Field</span>
+          </label>
+          <input type="text" id="inputMarkaz" placeholder="e.g. JAUHARABAD NORTH (MALE)" oninput="onDataChanged()">
+        </div>
+
+        <!-- Custom Notes Field -->
+        <div class="input-group full-width">
+          <label for="inputNote">
+            <span>Custom Notes</span>
+            <span style="font-size: 0.70rem; color: var(--text-muted);">Watermark Notes: Field</span>
+          </label>
+          <input type="text" id="inputNote" placeholder="e.g. School Monitoring Visit - Verification" oninput="onDataChanged()">
+        </div>
+
+        <!-- Location / Address Field with Map Picker -->
         <div class="input-group full-width">
           <label for="inputAddress">
-            <span>Location / Address</span>
+            <span>Location / Address (Fallback)</span>
             <button type="button" class="btn-pick-map" id="btnPickMap" onclick="openMapModal()">
               📍 Pick on Map
             </button>
           </label>
-          <input type="text" id="inputAddress" placeholder="School Name, Markaz, Tehsil Khushab" oninput="onDataChanged()">
-        </div>
-
-        <div class="input-group full-width">
-          <label for="inputNote">Custom Note / Project Title</label>
-          <input type="text" id="inputNote" placeholder="e.g. School Monitoring Visit - Verification" oninput="onDataChanged()">
+          <input type="text" id="inputAddress" placeholder="Tehsil Khushab, Punjab, Pakistan" oninput="onDataChanged()">
         </div>
       </div>
     </section>
@@ -1427,6 +1928,172 @@
         </svg>
         Save Stamped Photo
       </button>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       CONOTA SETTINGS / FINE-TUNE MODAL SHEET
+       ======================================================== -->
+  <div class="settings-backdrop" id="settingsModal" onclick="if(event.target === this) closeSettingsModal()">
+    <div class="settings-sheet">
+      <div class="settings-header">
+        <div class="settings-title-group">
+          <div class="settings-title">
+            <span>⚙️</span>
+            <span>Conota Watermark Settings</span>
+          </div>
+          <div class="settings-subtitle">Adjust layout, active fields, opacity & compression</div>
+        </div>
+        <button type="button" class="settings-close-btn" onclick="closeSettingsModal()">&times;</button>
+      </div>
+
+      <div class="settings-body">
+        
+        <!-- Section A: Watermark Captions & Labels -->
+        <div class="settings-group">
+          <div class="settings-group-title">
+            <span>Watermark Fields & Labels</span>
+            <span style="font-size: 0.70rem; color: var(--text-muted);">Conota Display Style</span>
+          </div>
+
+          <div class="toggle-row">
+            <div class="toggle-label">
+              <span class="toggle-label-main">Watermark Captions (Labels)</span>
+              <span class="toggle-label-sub">Show "Project:", "Markaz:", "Notes:" prefix markers</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="settingShowLabels" onchange="updateSettingsFromUI()">
+              <span class="slider-round"></span>
+            </label>
+          </div>
+
+          <div class="toggle-row">
+            <div class="toggle-label">
+              <span class="toggle-label-main">WGS84: Prefix on Coordinates</span>
+              <span class="toggle-label-sub">Display as "WGS84: 32.47287, 72.48893"</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="settingCoordsPrefix" onchange="updateSettingsFromUI()">
+              <span class="slider-round"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Section B: Placement & Typography -->
+        <div class="settings-group">
+          <div class="settings-group-title">
+            <span>Placement & Typography</span>
+            <span style="font-size: 0.70rem; color: var(--text-muted);">Proportional Scaling</span>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label style="font-size: 0.80rem; font-weight: 600; color: var(--text-main);">Watermark Position</label>
+            <div class="position-grid">
+              <button type="button" class="position-btn" data-pos="top-left" onclick="setPosition('top-left')">↖ Top Left</button>
+              <button type="button" class="position-btn" data-pos="top-right" onclick="setPosition('top-right')">↗ Top Right</button>
+              <button type="button" class="position-btn active" data-pos="bottom-left" onclick="setPosition('bottom-left')">↙ Bottom Left</button>
+              <button type="button" class="position-btn" data-pos="bottom-right" onclick="setPosition('bottom-right')">↘ Bottom Right</button>
+            </div>
+          </div>
+
+          <div class="slider-control-wrap">
+            <div class="slider-header">
+              <span>Font Size & Style</span>
+              <span class="slider-val-badge" id="fontSizeBadge">Level 5 (2.2%)</span>
+            </div>
+            <input type="range" id="settingFontSize" min="1" max="10" step="1" value="5" oninput="updateSettingsFromUI()">
+            <div style="display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--text-muted);">
+              <span>1 (Compact 1.2%)</span>
+              <span>5 (Conota Default)</span>
+              <span>10 (Large 3.5%)</span>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label style="font-size: 0.80rem; font-weight: 600; color: var(--text-main);">Font Color</label>
+            <div class="color-presets-row">
+              <div class="color-pill active" style="background: #ffffff;" data-color="#ffffff" onclick="setFontColor('#ffffff')" title="White"></div>
+              <div class="color-pill" style="background: #facc15;" data-color="#facc15" onclick="setFontColor('#facc15')" title="Yellow"></div>
+              <div class="color-pill" style="background: #fb923c;" data-color="#fb923c" onclick="setFontColor('#fb923c')" title="Orange"></div>
+              <div class="color-pill" style="background: #38bdf8;" data-color="#38bdf8" onclick="setFontColor('#38bdf8')" title="Cyan"></div>
+              <input type="color" class="color-picker-input" id="settingCustomColor" value="#ffffff" onchange="setFontColor(this.value)" title="Custom color picker">
+              <span style="font-size: 0.75rem; color: var(--text-muted); font-family: monospace;" id="fontColorText">#ffffff</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section C: Dark Backing Container & Opacity -->
+        <div class="settings-group">
+          <div class="settings-group-title">
+            <span>Dark Backing Container</span>
+            <span style="font-size: 0.70rem; color: var(--text-muted);">Conota Translucent Backing</span>
+          </div>
+
+          <div class="toggle-row">
+            <div class="toggle-label">
+              <span class="toggle-label-main">Grey Background</span>
+              <span class="toggle-label-sub">Dark rounded backing container behind watermark text</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="settingShowBg" checked onchange="updateSettingsFromUI()">
+              <span class="slider-round"></span>
+            </label>
+          </div>
+
+          <div class="slider-control-wrap" id="opacityControlWrap">
+            <div class="slider-header">
+              <span>Grey Background Transparency</span>
+              <span class="slider-val-badge" id="opacityBadge">3 of 5 (~50%)</span>
+            </div>
+            <input type="range" id="settingBgOpacity" min="1" max="5" step="1" value="3" oninput="updateSettingsFromUI()">
+            <div style="display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--text-muted);">
+              <span>1 (Nearly Opaque 85%)</span>
+              <span>3 (Conota 50%)</span>
+              <span>5 (Mostly Transparent 22%)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section D: Drag-to-Order / Up-Down List -->
+        <div class="settings-group">
+          <div class="settings-group-title">
+            <span>Field Ordering & Toggles</span>
+            <span style="font-size: 0.70rem; color: var(--text-muted);">Reorder & Toggle</span>
+          </div>
+          <p style="font-size: 0.74rem; color: var(--text-muted);">Use checkboxes to hide/show fields in the stamp and arrows to change vertical display order.</p>
+          
+          <div class="order-list" id="fieldOrderContainer">
+            <!-- Dynamically populated by renderOrderList() -->
+          </div>
+        </div>
+
+        <!-- Section E: Photo Compression Quality -->
+        <div class="settings-group">
+          <div class="settings-group-title">
+            <span>Photo Compression & Quality</span>
+            <span style="font-size: 0.70rem; color: var(--text-muted);">JPEG Export Quality</span>
+          </div>
+
+          <div class="slider-control-wrap">
+            <div class="slider-header">
+              <span>Export Quality</span>
+              <span class="slider-val-badge" id="qualityBadge">95% (High Quality)</span>
+            </div>
+            <input type="range" id="settingQuality" min="50" max="100" step="1" value="95" oninput="updateSettingsFromUI()">
+            <div style="display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--text-muted);">
+              <span>50% (Small file)</span>
+              <span>95% (Recommended)</span>
+              <span>100% (Lossless JPEG)</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="settings-footer">
+        <button type="button" class="btn-secondary" style="flex: 1;" onclick="resetToConotaDefaults()">Reset Defaults</button>
+        <button type="button" class="btn-primary" style="flex: 2;" onclick="closeSettingsModal()">Apply & Done</button>
+      </div>
     </div>
   </div>
 
@@ -1482,32 +2149,56 @@
 
   <script>
     /**
-     * Photo Stamp Pro Application Logic with Tehsil Khushab Schools Integration
+     * Photo Stamp Pro Application Logic
+     * Conota Watermark Engine & Tehsil Khushab Schools Integration
      */
 
     // Embedded 213 Tehsil Khushab Schools dataset (instant offline fallback)
     const EMBEDDED_KHUSHAB_SCHOOLS = [{"tehsil":"KHUSHAB","markaz":"JAUHARABAD NORTH (MALE)","name":"38210008 - GPS DHOK CHAPRI","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.469908,"lng":72.202013},{"tehsil":"KHUSHAB","markaz":"RODA NORTH (MALE)","name":"38210070 - GPS DERA MUHAMMAD ALI","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.117401,"lng":72.212135},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL SOUTH (MALE)","name":"38210099 - GPS DERA CHAKAN","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.502389,"lng":72.452693},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL NORTH (MALE)","name":"38210102 - GPS CHANGA DAKHLI","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.6064,"lng":72.4555},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL EAST (MALE)","name":"38210110 - GPS MANGWAL","gender":"Male","level":"Primary","category":"SED","lat":32.5378002,"lng":72.5681664},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL WEST (MALE)","name":"38210113 - GPS MIAN WALA NALLI","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.419814,"lng":72.311477},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD EAST (MALE)","name":"38210116 - GPS PEER WAL NARI","gender":"Male","level":"Primary","category":"SED","lat":32.476729,"lng":72.408192},{"tehsil":"KHUSHAB","markaz":"RODA NORTH (MALE)","name":"38210121 - GPS AWANA WALA","gender":"Male","level":"Primary","category":"SED","lat":32.13183219,"lng":72.00214148},{"tehsil":"KHUSHAB","markaz":"RODA SOUTH (MALE)","name":"38210122 - GPS FALAK SHER NOON","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.04999,"lng":72.0522},{"tehsil":"KHUSHAB","markaz":"RODA NORTH (MALE)","name":"38210123 - GPS KHAKHAN WALA (ASP)","gender":"Male","level":"Primary","category":"SED","lat":32.06495545,"lng":72.1405039},{"tehsil":"KHUSHAB","markaz":"RODA NORTH (MALE)","name":"38210124 - GPS KHAN MUHAMMAD VIRK","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.057065,"lng":72.182138},{"tehsil":"KHUSHAB","markaz":"RODA SOUTH (MALE)","name":"38210127 - GPS MUBARAK CHANWAS","gender":"Male","level":"Primary","category":"SED","lat":32.016773,"lng":72.098913},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SADAR (MALE)","name":"38210129 - GPS PAK KUWAIT MILLS KHUSHAB","gender":"Male","level":"Primary","category":"SED","lat":32.306847,"lng":72.248701},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SADAR (MALE)","name":"38210130 - GPS RAILWAY STATION HADALI","gender":"Male","level":"Primary","category":"SED","lat":32.299496,"lng":72.182599},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SADAR (MALE)","name":"38210131 - GPS RAMZAN COLONY JOUHARABAD","gender":"Male","level":"Primary","category":"SED","lat":32.27886,"lng":72.26396},{"tehsil":"KHUSHAB","markaz":"RODA NORTH (MALE)","name":"38210135 - GPS SONA LODI","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.118182,"lng":72.151423},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA EAST (MALE)","name":"38210136 - GPS SULTAN MEHMOOD VIRK","gender":"Male","level":"Primary","category":"PSRP-III","lat":32.05379,"lng":72.16628},{"tehsil":"KHUSHAB","markaz":"RODA SOUTH (MALE)","name":"38210137 - GPS ZAFAR WALA","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.044941,"lng":72.161074},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF NORTH (MALE)","name":"38210138 - GPS BHAN CHOONI","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.455501,"lng":72.078351},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF NORTH (MALE)","name":"38210146 - GPS PAPRALI","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.490721,"lng":72.1375414},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA WEST (MALE)","name":"38210149 - GPS YARAN FAQIR","gender":"Male","level":"Primary","category":"SED","lat":32.1283,"lng":71.99124},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SADAR (MALE)","name":"38210154 - GPS ALKOSAR TAJPURA","gender":"Male","level":"Primary","category":"SED","lat":32.284271,"lng":72.35251},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD EAST (MALE)","name":"38210156 - GPS BADLI WALA","gender":"Male","level":"Primary","category":"SED","lat":32.305646,"lng":72.333783},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD NORTH (MALE)","name":"38210157 - GPS BHARKIN","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.405711,"lng":72.266286},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD NORTH (MALE)","name":"38210159 - GPS BURJ MOHRA","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.4411,"lng":72.2737},{"tehsil":"KHUSHAB","markaz":"KHUSHAB NORTH (MALE)","name":"38210161 - GPS CHABEEL","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.39227,"lng":72.39428},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD EAST (MALE)","name":"38210162 - GPS CHAK NO. 54 MB","gender":"Male","level":"Primary","category":"SED","lat":32.354928,"lng":72.294514},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD NORTH (MALE)","name":"38210164 - GPS CHAPPAR SHARIF","gender":"Male","level":"Primary","category":"SED","lat":32.435886,"lng":72.176807},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD NORTH (MALE)","name":"38210165 - GPS DERA ALI KHAN","gender":"Male","level":"Primary","category":"SED","lat":32.426758,"lng":72.223705},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF NORTH (MALE)","name":"38210166 - GPS DERA ALLAH YAR","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.359059,"lng":72.182608},{"tehsil":"KHUSHAB","markaz":"KHUSHAB NORTH (MALE)","name":"38210168 - GPS DERA BAHADUR KHAN (ASP)","gender":"Male","level":"Primary","category":"SED","lat":32.400532,"lng":72.410095},{"tehsil":"KHUSHAB","markaz":"KHUSHAB NORTH (MALE)","name":"38210169 - GPS DERA GHULAM SARWAR","gender":"Male","level":"Primary","category":"SED","lat":32.32458,"lng":72.40324},{"tehsil":"KHUSHAB","markaz":"KHUSHAB NORTH (MALE)","name":"38210170 - GPS DERA HAJI HANIF","gender":"Male","level":"Primary","category":"SED","lat":32.36991,"lng":72.38429},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD EAST (MALE)","name":"38210172 - GPS DERA MUHAMMAD NAWAZ","gender":"Male","level":"Primary","category":"SED","lat":32.380316,"lng":72.265948},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD NORTH (MALE)","name":"38210173 - GPS DERA MUHAMMAD KHAN","gender":"Male","level":"Primary","category":"SED","lat":32.416753,"lng":72.233692},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL EAST (MALE)","name":"38210174 - GPS DERA MUHAMMAD SIDDIQUE","gender":"Male","level":"Primary","category":"SED","lat":32.357193,"lng":72.405955},{"tehsil":"KHUSHAB","markaz":"KHUSHAB NORTH (MALE)","name":"38210175 - GPS GHAGH KALAN","gender":"Male","level":"Primary","category":"SED","lat":32.36216,"lng":72.4356},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SADAR (MALE)","name":"38210176 - GPS ISLAM PURA KUSHAB","gender":"Male","level":"Primary","category":"SED","lat":32.294371,"lng":72.342673},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SADAR (MALE)","name":"38210177 - GPS JAMIA NOOR UL ISLAM","gender":"Male","level":"Primary","category":"SED","lat":32.295691,"lng":72.358306},{"tehsil":"KHUSHAB","markaz":"KHUSHAB NORTH (MALE)","name":"38210178 - GPS JANDRAN","gender":"Male","level":"Primary","category":"SED","lat":32.33208,"lng":72.41769},{"tehsil":"KHUSHAB","markaz":"KHUSHAB NORTH (MALE)","name":"38210180 - GPS KAURA","gender":"Male","level":"Primary","category":"SED","lat":32.36894,"lng":72.47116},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SADAR (MALE)","name":"38210182 - GPS MUDHAN WALA","gender":"Male","level":"Primary","category":"SED","lat":32.301176,"lng":72.353496},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD NORTH (MALE)","name":"38210183 - GPS NARA","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.427058,"lng":72.149792},{"tehsil":"KHUSHAB","markaz":"KHUSHAB NORTH (MALE)","name":"38210184 - GPS NOOR WANA (ASP)","gender":"Male","level":"Primary","category":"SED","lat":32.352404,"lng":72.450764},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF NORTH (MALE)","name":"38210185 - GPS PEERHA MARKHAL","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.401546,"lng":72.192955},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF NORTH (MALE)","name":"38210186 - GPS PINDI KORA","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.374809,"lng":72.192338},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD NORTH (MALE)","name":"38210187 - GPS PINDI MEHRWAL","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.42539,"lng":72.29367},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD NORTH (MALE)","name":"38210188 - GPS POTHA","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.506201,"lng":72.190957},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SADAR (MALE)","name":"38210189 - GPS RONAQ PURA","gender":"Male","level":"Primary","category":"SED","lat":32.304074,"lng":72.359556},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD EAST (MALE)","name":"38210190 - GPS SAGHRALI","gender":"Male","level":"Primary","category":"PSRP-III","lat":32.389286,"lng":72.243238},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SADAR (MALE)","name":"38210191 - GPS SHAHANAN WALA KHUSHAB","gender":"Male","level":"Primary","category":"SED","lat":32.284966,"lng":72.344499},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL EAST (MALE)","name":"38210192 - GPS THATHI SANDRAL","gender":"Male","level":"Primary","category":"SED","lat":32.352088,"lng":72.412136},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SOUTH (MALE)","name":"38210193 - GPS UMER TAJPURA KHUSHAB","gender":"Male","level":"Primary","category":"SED","lat":32.3048,"lng":72.364916},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD EAST (MALE)","name":"38210195 - GPS WAHEER SHARQI","gender":"Male","level":"Primary","category":"SED","lat":32.416291,"lng":72.285572},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SADAR (MALE)","name":"38210197 - GPS MC NO. 2 KHUSHAB","gender":"Male","level":"Primary","category":"SED","lat":32.2952,"lng":72.351431},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SADAR (MALE)","name":"38210198 - GPS MC NO. 3 KHUSHAB MOHALLAH HAKIMAN WALA","gender":"Male","level":"Primary","category":"SED","lat":32.291781,"lng":72.354404},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SADAR (MALE)","name":"38210200 - GPS MC NO. 5 KHUSHAB","gender":"Male","level":"Primary","category":"SED","lat":32.292274,"lng":72.346467},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA EAST (MALE)","name":"38210253 - GPS BILOO FARM","gender":"Male","level":"Primary","category":"SED","lat":32.16447,"lng":72.20473},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD EAST (MALE)","name":"38210254 - GPS CHAK NO 57 MB","gender":"Male","level":"Primary","category":"SED","lat":32.367545,"lng":72.340606},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SOUTH (MALE)","name":"38210255 - GES CHAK NO 39 MB","gender":"Male","level":"Middle","category":"SED","lat":32.1268549,"lng":72.2272214},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA SADAR (MALE)","name":"38210256 - GPS CHAK NO 44 MB","gender":"Male","level":"Primary","category":"SED","lat":32.22091,"lng":72.19629},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA EAST (MALE)","name":"38210257 - GPS CHAK NO 45 MB","gender":"Male","level":"Primary","category":"SED","lat":32.20396,"lng":72.22072},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SOUTH (MALE)","name":"38210258 - GES CHAK NO 46 MB","gender":"Male","level":"Middle","category":"SED","lat":32.2140049,"lng":72.229554},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA SADAR (MALE)","name":"38210259 - GPS CHAK NO 48 MB","gender":"Male","level":"Primary","category":"SED","lat":32.24507,"lng":72.20561},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA SADAR (MALE)","name":"38210260 - GPS CHAK NO 49 MB","gender":"Male","level":"Primary","category":"SED","lat":32.23619,"lng":72.22639},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA EAST (MALE)","name":"38210261 - GPS CHAK NO 50 MB","gender":"Male","level":"Primary","category":"SED","lat":32.2184,"lng":72.24265},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SOUTH (MALE)","name":"38210262 - GPS CHAK NO 51 MB","gender":"Male","level":"Primary","category":"SED","lat":32.23419,"lng":72.26337},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SOUTH (MALE)","name":"38210263 - GPS CHAK NO 52 MB (ASP)","gender":"Male","level":"Primary","category":"SED","lat":32.245133,"lng":72.2646},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SOUTH (MALE)","name":"38210264 - GPS CHAK NO 53 MB","gender":"Male","level":"Primary","category":"SED","lat":32.24849,"lng":72.27142},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD EAST (MALE)","name":"38210265 - GPS CHAK NO. 58 MB","gender":"Male","level":"Primary","category":"SED","lat":32.356721,"lng":72.357547},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SADAR (MALE)","name":"38210268 - GPS CHAK NO 62 MB","gender":"Male","level":"Primary","category":"SED","lat":32.327306,"lng":72.292495},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD EAST (MALE)","name":"38210269 - GES CHAK NO 63 MB","gender":"Male","level":"Middle","category":"SED","lat":32.31614,"lng":72.287396},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SOUTH (MALE)","name":"38210270 - GPS DERA MOLADAD","gender":"Male","level":"Primary","category":"SED","lat":32.19015,"lng":72.23753},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA WEST (MALE)","name":"38210271 - GPS DERA SARDAR KHAN MAHIL","gender":"Male","level":"Primary","category":"SED","lat":32.16995,"lng":72.15809},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SOUTH (MALE)","name":"38210272 - GPS DERA TIRKHANAN WALA","gender":"Male","level":"Primary","category":"SED","lat":32.26465,"lng":72.27562},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SOUTH (MALE)","name":"38210274 - GPS GIROTE BALA","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.084102,"lng":72.264037},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SOUTH (MALE)","name":"38210276 - GPS GOGO CHAKI","gender":"Male","level":"Primary","category":"PSRP-III","lat":32.110505,"lng":72.317697},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SOUTH (MALE)","name":"38210278 - GPS JHUGIAN SHEIKHWAL","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.117577,"lng":72.318835},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SOUTH (MALE)","name":"38210280 - GPS NO. 1 JOYIA","gender":"Male","level":"Primary","category":"SED","lat":32.19598,"lng":72.29594},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SOUTH (MALE)","name":"38210281 - GPS NO. 2 JOYIA","gender":"Male","level":"Primary","category":"SED","lat":32.20205,"lng":72.29682},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SADAR (MALE)","name":"38210282 - GPS JOYIA WALA CHAK NO. 63 MB","gender":"Male","level":"Primary","category":"SED","lat":32.3103,"lng":72.2992},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SOUTH (MALE)","name":"38210283 - GPS KOTLA JAGIR","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.1250176,"lng":72.272093},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SADAR (MALE)","name":"38210284 - GES KURPALKA","gender":"Male","level":"Middle","category":"SED","lat":32.245542,"lng":72.315017},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SOUTH (MALE)","name":"38210286 - GPS MEHLIAN","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.152873,"lng":72.282633},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SOUTH (MALE)","name":"38210287 - GPS MANGOOR","gender":"Male","level":"Primary","category":"SED","lat":32.2612204,"lng":72.3250596},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SOUTH (MALE)","name":"38210289 - GPS MUHIB PUR GHARBI","gender":"Male","level":"Primary","category":"SED","lat":32.1363596,"lng":72.2769039},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SOUTH (MALE)","name":"38210290 - GPS MUHAMMAD SHAH","gender":"Male","level":"Primary","category":"SED","lat":32.233365,"lng":72.310954},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SADAR (MALE)","name":"38210292 - GPS NO. 2 JAUHARABAD","gender":"Male","level":"Primary","category":"SED","lat":32.296917,"lng":72.279048},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SOUTH (MALE)","name":"38210295 - GPS RANGPUR KADHI","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.10555,"lng":72.26401},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA EAST (MALE)","name":"38210296 - GPS SHAH AJMAL GIROTE","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.0667,"lng":72.2673},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SOUTH (MALE)","name":"38210297 - GPS SHAHBAZIAN WALA","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.166338,"lng":72.292775},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA EAST (MALE)","name":"38210298 - GPS SHAHEEN COLONY","gender":"Male","level":"Primary","category":"SED","lat":32.18857,"lng":72.21453},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD EAST (MALE)","name":"38210299 - GPS SHIWALA","gender":"Male","level":"Primary","category":"SED","lat":32.330276,"lng":72.364326},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SADAR (MALE)","name":"38210301 - GPS THATHI GHANJERA","gender":"Male","level":"Primary","category":"SED","lat":32.218828,"lng":72.298736},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SOUTH (MALE)","name":"38210302 - GPS TIBBA QAIM DIN","gender":"Male","level":"Primary","category":"SED","lat":32.1519343,"lng":72.2872655},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA EAST (MALE)","name":"38210303 - GPS WASOO","gender":"Male","level":"Primary","category":"SED","lat":32.07505,"lng":72.26809},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SOUTH (MALE)","name":"38210304 - GPS ZAKIR ABAD","gender":"Male","level":"Primary","category":"SED","lat":32.1616416,"lng":72.2471425},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL WEST (MALE)","name":"38210369 - GPS AAJRIAN WALA","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.475667,"lng":72.363929},{"tehsil":"KHUSHAB","markaz":"KHUSHAB NORTH (MALE)","name":"38210370 - GPS AL MURTAZA RAJAR","gender":"Male","level":"Primary","category":"SED","lat":32.39288,"lng":72.48696},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL WEST (MALE)","name":"38210371 - GPS ARRARA","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.55622,"lng":72.37263},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL EAST (MALE)","name":"38210372 - GPS BANSI","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.4263651,"lng":72.5667059},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL EAST (MALE)","name":"38210373 - GPS BALWAL","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.4361445,"lng":72.5902591},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL WEST (MALE)","name":"38210374 - GPS BHUTTIAN WALA","gender":"Male","level":"Primary","category":"SED","lat":32.46708,"lng":72.35273},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL EAST (MALE)","name":"38210375 - GPS CHAK 65 MB","gender":"Male","level":"Primary","category":"SED","lat":32.42041,"lng":72.45289},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL NORTH (MALE)","name":"38210377 - GPS CHHAB","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.620061,"lng":72.525761},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL EAST (MALE)","name":"38210381 - GPS DERA ALLAH BAKHSH DHAK","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.4472597,"lng":72.5204754},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL SOUTH (MALE)","name":"38210382 - GPS DERA BAKHWAL KATHA SAGHRAL","gender":"Male","level":"Primary","category":"SED","lat":32.53772,"lng":72.468385},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL SOUTH (MALE)","name":"38210383 - GPS DERA BURHAN WALA","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.525611,"lng":72.538116},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL SOUTH (MALE)","name":"38210384 - GPS DERA GUNADHA KATHA SAGHRAL","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.5,"lng":72.48},{"tehsil":"KHUSHAB","markaz":"KHUSHAB NORTH (MALE)","name":"38210385 - GPS DERA HAITAM KHAN","gender":"Male","level":"Primary","category":"SED","lat":32.397992,"lng":72.419102},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL WEST (MALE)","name":"38210386 - GPS DERA JALKIAL","gender":"Male","level":"Primary","category":"SED","lat":32.43819,"lng":72.36984},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD NORTH (MALE)","name":"38210387 - GPS DERA KANDAN","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.40043,"lng":72.345977},{"tehsil":"KHUSHAB","markaz":"KHUSHAB NORTH (MALE)","name":"38210389 - GPS DERA KHIZAR HAYAT","gender":"Male","level":"Primary","category":"SED","lat":32.39978,"lng":72.50291},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL WEST (MALE)","name":"38210390 - GPS DERA LUNDOO","gender":"Male","level":"Primary","category":"SED","lat":32.425058,"lng":72.339017},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL EAST (MALE)","name":"38210391 - GPS DERA MEHRAY WALA JASWAL","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.476397,"lng":72.605591},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL EAST (MALE)","name":"38210392 - GPS DERA MIAN KHAN TALOKAR","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.443923,"lng":72.502483},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL SOUTH (MALE)","name":"38210394 - GPS DERA WARIS","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.555098,"lng":72.56267},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL NORTH (MALE)","name":"38210396 - GPS DHERI","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.642784,"lng":72.491384},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL SOUTH (MALE)","name":"38210397 - GPS DHOK ALLAH BAKSHS","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.555831,"lng":72.563923},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL SOUTH (MALE)","name":"38210399 - GPS DHOK MEHRWAL","gender":"Male","level":"Primary","category":"SED","lat":32.57132,"lng":72.54998},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL SOUTH (MALE)","name":"38210400 - GPS DHOK PIRHAL","gender":"Male","level":"Primary","category":"SED","lat":32.570312,"lng":72.51034},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL SOUTH (MALE)","name":"38210401 - GPS DHOK SANGHAY","gender":"Male","level":"Primary","category":"SED","lat":32.539081,"lng":72.485793},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL SOUTH (MALE)","name":"38210402 - GPS DHOK JHAGRA","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.547267,"lng":72.522578},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL WEST (MALE)","name":"38210403 - GPS FAZAL HAQ KALRI KHUSHAB","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.549917,"lng":72.352793},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL EAST (MALE)","name":"38210405 - GPS RAJA MUHAMMAD QASIM MEHBOOB SHAHEED","gender":"Male","level":"Primary","category":"SED","lat":32.4068654,"lng":72.5200623},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL NORTH (MALE)","name":"38210407 - GPS KADHAR","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.64398,"lng":72.47599},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL SOUTH (MALE)","name":"38210408 - GPS KATHA SAGHRAL","gender":"Male","level":"Primary","category":"SED","lat":32.511407,"lng":72.440054},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL NORTH (MALE)","name":"38210410 - GES KUPPER","gender":"Male","level":"Middle","category":"SED","lat":32.6153674,"lng":72.5330737},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL WEST (MALE)","name":"38210411 - GES MALWAL","gender":"Male","level":"Middle","category":"SED","lat":32.50521,"lng":72.37242},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL WEST (MALE)","name":"38210412 - GPS NALLI GHARBI","gender":"Male","level":"Primary","category":"SED","lat":32.486912,"lng":72.317364},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL WEST (MALE)","name":"38210414 - GPS NAWAN LOK KATHA SAGHRAL","gender":"Male","level":"Primary","category":"SED","lat":32.50432,"lng":72.44407},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL NORTH (MALE)","name":"38210415 - GPS NO 2 PAIL","gender":"Male","level":"Primary","category":"SED","lat":32.633609,"lng":72.4600944},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD EAST (MALE)","name":"38210416 - GPS NOORI NARI","gender":"Male","level":"Primary","category":"SED","lat":32.467397,"lng":72.413127},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL NORTH (MALE)","name":"38210417 - GPS NO. 2 PADHRAR","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.646863,"lng":72.513315},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL NORTH (MALE)","name":"38210418 - GPS NO. 1 PADHRAR","gender":"Male","level":"Primary","category":"SED","lat":32.658032,"lng":72.498113},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL NORTH (MALE)","name":"38210419 - GES NO. 1 PAIL","gender":"Male","level":"Middle","category":"SED","lat":32.6344363,"lng":72.4600247},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL NORTH (MALE)","name":"38210420 - GPS PIRHA","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.651159,"lng":72.442224},{"tehsil":"KHUSHAB","markaz":"RODA SOUTH (MALE)","name":"38210423 - GPS ALI KHAN KHAIL","gender":"Male","level":"Primary","category":"SED","lat":32.050058,"lng":72.027362},{"tehsil":"KHUSHAB","markaz":"RODA SOUTH (MALE)","name":"38210424 - GPS ALI PUR RODA","gender":"Male","level":"Primary","category":"SED","lat":32.075992,"lng":72.105372},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SADAR (MALE)","name":"38210425 - GES BOLA","gender":"Male","level":"Middle","category":"SED","lat":32.330223,"lng":72.250234},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA WEST (MALE)","name":"38210426 - GPS CANAL COLONY MITHA TIWANA","gender":"Male","level":"Primary","category":"SED","lat":32.25359,"lng":72.10963},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA SADAR (MALE)","name":"38210427 - GPS CHAK NO. 42 MB","gender":"Male","level":"Primary","category":"SED","lat":32.23851,"lng":72.15117},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA SADAR (MALE)","name":"38210428 - GPS CHAK NO. 43 MB","gender":"Male","level":"Primary","category":"SED","lat":32.23559,"lng":72.17261},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA SADAR (MALE)","name":"38210430 - GPS CHAK NO. 41 MB","gender":"Male","level":"Primary","category":"SED","lat":32.22945,"lng":72.15718},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA SADAR (MALE)","name":"38210431 - GPS DERA AFZAL BHAIL","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.175673,"lng":72.136423},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF NORTH (MALE)","name":"38210432 - GPS DERA BHASEEN","gender":"Male","level":"Primary","category":"SED","lat":32.3847799,"lng":72.2408359},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA WEST (MALE)","name":"38210433 - GPS DERA FEROZ HAMDI","gender":"Male","level":"Primary","category":"SED","lat":32.2519,"lng":72.11763},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA SADAR (MALE)","name":"38210434 - GPS DHLIAN WALA","gender":"Male","level":"Primary","category":"SED","lat":32.260688,"lng":72.091831},{"tehsil":"KHUSHAB","markaz":"RODA SOUTH (MALE)","name":"38210435 - GPS DHORI LUKOO","gender":"Male","level":"Primary","category":"SED","lat":32.075634,"lng":72.104031},{"tehsil":"KHUSHAB","markaz":"RODA NORTH (MALE)","name":"38210436 - GPS DHEEDIAN WALA","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.112359,"lng":72.172526},{"tehsil":"KHUSHAB","markaz":"RODA NORTH (MALE)","name":"38210437 - GPS DOST MUHAMMAD AWAN","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.069608,"lng":72.093293},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SADAR (MALE)","name":"38210440 - GES NO. 2 HADALI","gender":"Male","level":"Middle","category":"SED","lat":32.286214,"lng":72.196276},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA WEST (MALE)","name":"38210441 - GPS JHUGI MANDAY","gender":"Male","level":"Primary","category":"SED","lat":32.31151,"lng":72.1403},{"tehsil":"KHUSHAB","markaz":"RODA NORTH (MALE)","name":"38210442 - GPS KHAKHAN WALA","gender":"Male","level":"Primary","category":"SED","lat":32.01066992,"lng":72.11715393},{"tehsil":"KHUSHAB","markaz":"RODA SOUTH (MALE)","name":"38210443 - GPS LOHARAN WALA","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.083501,"lng":72.044378},{"tehsil":"KHUSHAB","markaz":"RODA NORTH (MALE)","name":"38210444 - GES MAMKAN WALA","gender":"Male","level":"Middle","category":"SED","lat":32.09501729,"lng":72.04997163},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SOUTH (MALE)","name":"38210447 - GPS MUHAMMAD BIN QASIM COLONY","gender":"Male","level":"Primary","category":"SED","lat":32.24915,"lng":72.24762},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA EAST (MALE)","name":"38210448 - GPS MUHAMMAD KHAIL","gender":"Male","level":"Primary","category":"SED","lat":32.10064,"lng":72.17989},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SADAR (MALE)","name":"38210449 - GPS NO. 1 HADALI","gender":"Male","level":"Primary","category":"SED","lat":32.2947,"lng":72.1849},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SADAR (MALE)","name":"38210450 - GPS NO. 4 SARFRAZ COLONY JAUHARABAD","gender":"Male","level":"Primary","category":"SED","lat":32.29311,"lng":72.251363},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA SADAR (MALE)","name":"38210451 - GPS NO. 1 MITHA TIWANA","gender":"Male","level":"Primary","category":"SED","lat":32.24226,"lng":72.110762},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SADAR (MALE)","name":"38210452 - GPS NO. 3 HADALI","gender":"Male","level":"Primary","category":"SED","lat":32.2968112,"lng":72.1973289},{"tehsil":"KHUSHAB","markaz":"RODA NORTH (MALE)","name":"38210455 - GPS RAMZAN RODA","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.07462526,"lng":72.09608216},{"tehsil":"KHUSHAB","markaz":"RODA SOUTH (MALE)","name":"38210456 - GPS RATTA WALA","gender":"Male","level":"Primary","category":"SED","lat":32.031527,"lng":72.146407},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA SADAR (MALE)","name":"38210457 - GPS SHALOLIAN WALA","gender":"Male","level":"Primary","category":"SED","lat":32.19772,"lng":72.11654},{"tehsil":"KHUSHAB","markaz":"RODA SOUTH (MALE)","name":"38210458 - GPS SHEIKH AHMAD","gender":"Male","level":"Primary","category":"SED","lat":32.07368,"lng":72.024582},{"tehsil":"KHUSHAB","markaz":"RODA SOUTH (MALE)","name":"38210459 - GPS SOHARAY WALA","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.072676,"lng":72.190296},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF SOUTH (MALE)","name":"38210460 - GES SULTAN PUR ANGRA","gender":"Male","level":"Middle","category":"SED","lat":32.3613358,"lng":72.3020671},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA EAST (MALE)","name":"38210461 - GPS UMEED ALI VIRK","gender":"Male","level":"Primary","category":"SED","lat":32.07338,"lng":72.18237},{"tehsil":"KHUSHAB","markaz":"RODA NORTH (MALE)","name":"38210463 - GPS ZAMA KHAKH","gender":"Male","level":"Primary","category":"SED","lat":32.11835831,"lng":72.12762192},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA EAST (MALE)","name":"38210464 - GPS ZAMAN COLONY","gender":"Male","level":"Primary","category":"SED","lat":32.25422,"lng":72.24783},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF SOUTH (MALE)","name":"38210465 - GPS BASTI DARHAL","gender":"Male","level":"Primary","category":"SED","lat":32.2957241,"lng":72.1473518},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF NORTH (MALE)","name":"38210467 - GPS BUTTAY WALA","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.353881,"lng":72.164339},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF NORTH (MALE)","name":"38210490 - GPS DARANWALA","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.365031,"lng":72.088454},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF SOUTH (MALE)","name":"38210491 - GPS DERA KALWAL","gender":"Male","level":"Primary","category":"SED","lat":32.3540207,"lng":72.1240262},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA WEST (MALE)","name":"38210492 - GPS DERA SULEMAN BIJAR","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.28192,"lng":72.0619},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF SOUTH (MALE)","name":"38210493 - GPS DERA TIWANA WALA","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.31437,"lng":72.060364},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF SOUTH (MALE)","name":"38210494 - GPS DHOK MIR DEH","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.332145,"lng":72.115108},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF SOUTH (MALE)","name":"38210495 - GPS DHOK CHOHAK","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.2957241,"lng":72.1473518},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF SOUTH (MALE)","name":"38210496 - GPS FALAK SHER","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.301199,"lng":72.053298},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF SOUTH (MALE)","name":"38210497 - GPS HEROO (ASP)","gender":"Male","level":"Primary","category":"SED","lat":32.2982454,"lng":72.1269883},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF NORTH (MALE)","name":"38210498 - GPS JABBI GHARBI","gender":"Male","level":"Primary","category":"SED","lat":32.389037,"lng":72.1026271},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA WEST (MALE)","name":"38210502 - GPS KOTHI NAWAB","gender":"Male","level":"Primary","category":"SED","lat":32.29591,"lng":72.05496},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF NORTH (MALE)","name":"38210504 - GPS NANGAH","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.496508,"lng":72.056623},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF NORTH (MALE)","name":"38210505 - GPS PERA KAMALIN WALA","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.468621,"lng":72.081051},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF NORTH (MALE)","name":"38210509 - GPS SATRA KAWAD","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.45834,"lng":72.12901},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA WEST (MALE)","name":"38210510 - GPS SHADADAN","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.145792,"lng":72.028155},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA WEST (MALE)","name":"38210511 - GPS SHAIKHU","gender":"Male","level":"Primary","category":"SED","lat":32.25555,"lng":72.00952},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF SOUTH (MALE)","name":"38210513 - GPS TUNNIAN WALI","gender":"Male","level":"Primary","category":"SED","lat":32.3042541,"lng":72.1258775},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF SOUTH (MALE)","name":"38210514 - GPS UCHI SAYEDAN","gender":"Male","level":"Primary","category":"SED","lat":32.304,"lng":72.076},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF SOUTH (MALE)","name":"38210792 - GES BASTI SHER WALI","gender":"Male","level":"Middle","category":"SED","lat":32.2957241,"lng":72.1473518},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD NORTH (MALE)","name":"38210793 - GES KUND","gender":"Male","level":"Middle","category":"SED","lat":32.41134,"lng":72.207721},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD EAST (MALE)","name":"38210808 - GES CHAK NO. 59 MB","gender":"Male","level":"Middle","category":"SED","lat":32.354078,"lng":72.343059},{"tehsil":"KHUSHAB","markaz":"KHUSHAB SOUTH (MALE)","name":"38210809 - GES DERA ABDUL ALI SHAH MOHIB PUR","gender":"Male","level":"Middle","category":"SED","lat":32.1318883,"lng":72.272093},{"tehsil":"KHUSHAB","markaz":"JAUHARABAD SADAR (MALE)","name":"38210814 - GES NO. 3 JAUHARABAD","gender":"Male","level":"Middle","category":"SED","lat":32.274838,"lng":72.272352},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA EAST (MALE)","name":"38210815 - GES WATOO","gender":"Male","level":"Middle","category":"SED","lat":32.02398,"lng":72.23282},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL WEST (MALE)","name":"38210829 - GES KATHA MISRAL","gender":"Male","level":"Middle","category":"SED","lat":32.53067,"lng":72.42336},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL NORTH (MALE)","name":"38210830 - GES KURAR","gender":"Male","level":"Middle","category":"SED","lat":32.477833,"lng":72.488952},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL SOUTH (MALE)","name":"38210831 - GES MANGWAL","gender":"Male","level":"Middle","category":"SED","lat":32.538232,"lng":72.572379},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA WEST (MALE)","name":"38210832 - GES BOTALA","gender":"Male","level":"Middle","category":"SED","lat":32.2669,"lng":72.13664},{"tehsil":"KHUSHAB","markaz":"RODA SOUTH (MALE)","name":"38210833 - GES LUKOO","gender":"Male","level":"Middle","category":"SED","lat":32.047746,"lng":72.079962},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA SADAR (MALE)","name":"38210834 - GES MITHA TIWANA","gender":"Male","level":"Middle","category":"SED","lat":32.24478,"lng":72.10438},{"tehsil":"KHUSHAB","markaz":"RODA NORTH (MALE)","name":"38210835 - GES TAHIR WALA","gender":"Male","level":"Middle","category":"SED","lat":32.07503209,"lng":72.12504331},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF NORTH (MALE)","name":"38210838 - GES CHANKI","gender":"Male","level":"Middle","category":"SED","lat":32.385361,"lng":72.116985},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF NORTH (MALE)","name":"38210839 - GES DHOK MEER AHMED","gender":"Male","level":"Middle","category":"SED","lat":32.340563,"lng":72.137874},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA WEST (MALE)","name":"38210840 - GES PANJA","gender":"Male","level":"Middle","category":"SED","lat":32.23186,"lng":72.06188},{"tehsil":"KHUSHAB","markaz":"RODA NORTH (MALE)","name":"38210962 - GPS JAMALIAN WALA","gender":"Male","level":"Primary","category":"PSRP-II","lat":32.12663232,"lng":71.99067704},{"tehsil":"KHUSHAB","markaz":"KATHA SAGRAL EAST (MALE)","name":"38210963 - GPS DERA MAKHANA","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.480383,"lng":72.613778},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA WEST (MALE)","name":"38210969 - GPS NAHR PUL KAMRAY WALA","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.21395,"lng":71.98524},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA WEST (MALE)","name":"38210970 - GPS DERA KHUDA YAR RATIAL","gender":"Male","level":"Primary","category":"PSRP-I","lat":32.164015,"lng":72.007429},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA EAST (MALE)","name":"38210973 - GPS REHMAN COLONY","gender":"Male","level":"Primary","category":"SED","lat":32.275541,"lng":72.256779},{"tehsil":"KHUSHAB","markaz":"JABBI SHARIF SOUTH (MALE)","name":"38210976 - GPS PUL JABBI","gender":"Male","level":"Primary","category":"PSRP-III","lat":32.318182,"lng":72.111586},{"tehsil":"KHUSHAB","markaz":"MITHA TIWANA WEST (MALE)","name":"38210978 - GPS DERA ISHAQUE MAHAL MITHA TIWANA","gender":"Male","level":"Primary","category":"PSRP-III","lat":32.279516,"lng":72.083227}];
+
+    // Default Conota Settings Specification
+    const DEFAULT_CONOTA_SETTINGS = {
+      showLabels: true,          // Watermark Captions (Project:, Markaz:, Notes:)
+      coordsPrefix: false,       // WGS84: prefix
+      position: 'bottom-left',   // 'bottom-left', 'bottom-right', 'top-left', 'top-right'
+      fontSizeLevel: 5,          // 1 to 10 (scales font from 1.2% to 3.5% of Math.min(w,h))
+      fontColor: '#ffffff',      // Hex color
+      showBg: true,              // Dark grey backing container
+      bgOpacityLevel: 3,         // 1: 85%, 2: 68%, 3: 50%, 4: 36%, 5: 22%
+      jpegQuality: 95,           // 50 to 100
+      fieldOrder: ['project', 'markaz', 'notes', 'datetime', 'coords'],
+      fieldsEnabled: {
+        project: true,
+        markaz: true,
+        notes: true,
+        datetime: true,
+        coords: true
+      }
+    };
 
     // Application State
     const state = {
       imageSource: null,        // ImageBitmap or HTMLImageElement
       originalWidth: 0,
       originalHeight: 0,
-      currentTemplate: 1,       // 1 to 5
+      currentTemplate: 1,       // 1: Conota Compact, 2: Field Box, 3: Minimal, 4: Split, 5: Digital
       mode: 'auto',             // 'auto' or 'manual'
       date: '',                 // YYYY-MM-DD
       time: '',                 // HH:MM:SS
       lat: null,
       lon: null,
-      address: '',
-      note: '',
+      projectName: '',          // Project / School Name
+      markaz: '',               // Markaz / Sub-area
+      note: '',                 // Custom Notes
+      address: '',              // Fallback Location
       isGeolocating: false,
       schoolsList: [],          // Array of Khushab schools
-      selectedSchool: null,     // Currently selected school object { name, markaz, lat, lng, ... }
-      currentOffsetDistance: 0  // Last generated 1-5m jitter distance in meters
+      selectedSchool: null,     // Currently selected school object
+      currentOffsetDistance: 0, // Last generated 1-5m jitter distance in meters
+      settings: JSON.parse(JSON.stringify(DEFAULT_CONOTA_SETTINGS))
     };
 
-    // DOM Elements
+    // DOM Elements Cache
     const elements = {
       fileInput: document.getElementById('fileInput'),
       cameraInput: document.getElementById('cameraInput'),
@@ -1516,6 +2207,8 @@
       changePhotoBar: document.getElementById('changePhotoBar'),
       imageResolutionBadge: document.getElementById('imageResolutionBadge'),
       canvasStatusBadge: document.getElementById('canvasStatusBadge'),
+      quickBarPos: document.getElementById('quickBarPos'),
+      quickBarOpacity: document.getElementById('quickBarOpacity'),
       btnModeAuto: document.getElementById('btnModeAuto'),
       btnModeManual: document.getElementById('btnModeManual'),
       gpsStatusBanner: document.getElementById('gpsStatusBanner'),
@@ -1536,8 +2229,10 @@
       inputTime: document.getElementById('inputTime'),
       inputLat: document.getElementById('inputLat'),
       inputLon: document.getElementById('inputLon'),
-      inputAddress: document.getElementById('inputAddress'),
+      inputProject: document.getElementById('inputProject'),
+      inputMarkaz: document.getElementById('inputMarkaz'),
       inputNote: document.getElementById('inputNote'),
+      inputAddress: document.getElementById('inputAddress'),
       btnSave: document.getElementById('btnSave'),
       btnShare: document.getElementById('btnShare'),
       mapModal: document.getElementById('mapModal'),
@@ -1545,7 +2240,22 @@
       mapSelectedAddressPreview: document.getElementById('mapSelectedAddressPreview'),
       offlineMapBanner: document.getElementById('offlineMapBanner'),
       toast: document.getElementById('toastNotification'),
-      toastText: document.getElementById('toastText')
+      toastText: document.getElementById('toastText'),
+      // Settings Modal Elements
+      settingsModal: document.getElementById('settingsModal'),
+      settingShowLabels: document.getElementById('settingShowLabels'),
+      settingCoordsPrefix: document.getElementById('settingCoordsPrefix'),
+      settingFontSize: document.getElementById('settingFontSize'),
+      fontSizeBadge: document.getElementById('fontSizeBadge'),
+      settingCustomColor: document.getElementById('settingCustomColor'),
+      fontColorText: document.getElementById('fontColorText'),
+      settingShowBg: document.getElementById('settingShowBg'),
+      settingBgOpacity: document.getElementById('settingBgOpacity'),
+      opacityBadge: document.getElementById('opacityBadge'),
+      opacityControlWrap: document.getElementById('opacityControlWrap'),
+      fieldOrderContainer: document.getElementById('fieldOrderContainer'),
+      settingQuality: document.getElementById('settingQuality'),
+      qualityBadge: document.getElementById('qualityBadge')
     };
 
     // Leaflet map instance variables
@@ -1555,11 +2265,15 @@
     let tempMapLon = 72.202013;
     let tempMapAddress = '';
 
-    // Initialize Application
+    // ==========================================
+    // INITIALIZATION & LIFECYCLE
+    // ==========================================
     window.addEventListener('DOMContentLoaded', () => {
       initSchoolsData();
       loadSavedPreferences();
       initDateTimeDefaults();
+      syncSettingsToUI();
+      renderOrderList();
       fetchAutoData(false);
 
       // File input listeners (Gallery & Camera)
@@ -1605,7 +2319,6 @@
 
       updateSchoolsCountBadge(state.schoolsList.length);
 
-      // Attempt background sync if online
       if (navigator.onLine) {
         syncSchoolsData(false);
       }
@@ -1617,7 +2330,6 @@
 
     /**
      * Fetch & Cache School Data from GitHub Pages
-     * https://elixirlinnet.github.io/Schools-Mapping-System-by-ASiM/schools.csv
      */
     async function syncSchoolsData(showFeedback = true) {
       elements.btnSyncSchools.classList.add('spinning');
@@ -1695,7 +2407,7 @@
         return s.name.toLowerCase().includes(q) || 
                s.markaz.toLowerCase().includes(q) || 
                (s.category && s.category.toLowerCase().includes(q));
-      }).slice(0, 40); // Top 40 matches for snappy rendering
+      }).slice(0, 40);
 
       if (matches.length === 0) {
         elements.schoolDropdown.innerHTML = '<div style="padding: 12px; color: #94a3b8; font-size: 0.8rem; text-align: center;">No matching schools found in Tehsil Khushab</div>';
@@ -1714,7 +2426,6 @@
         </div>
       `).join('');
 
-      // Store current filtered list for selection index
       window._currentFilteredSchools = matches;
       elements.schoolDropdown.style.display = 'block';
     }
@@ -1727,7 +2438,7 @@
 
     /**
      * Select a School:
-     * - Fills Location/Address with school name and markaz
+     * - Populates Project/School Name and Markaz
      * - Applies 1 to 5 meter random offset to coordinates
      */
     function selectSchool(school) {
@@ -1735,8 +2446,13 @@
       elements.schoolSearchInput.value = school.name;
       elements.schoolDropdown.style.display = 'none';
 
-      // Set Address
+      // Set School Name & Markaz
+      state.projectName = school.name;
+      state.markaz = school.markaz;
       state.address = `${school.name}, ${school.markaz}, KHUSHAB`;
+
+      elements.inputProject.value = state.projectName;
+      elements.inputMarkaz.value = state.markaz;
       elements.inputAddress.value = state.address;
 
       // Apply Random 1 to 5 meter GPS Offset
@@ -1747,7 +2463,6 @@
       elements.selectedSchoolMetaText.textContent = `${school.markaz} • Base: ${school.lat.toFixed(6)}, ${school.lng.toFixed(6)}`;
       elements.selectedSchoolBadge.style.display = 'flex';
 
-      // Automatically switch to Manual Mode so user sees coordinates & school details
       setDataMode('manual', false);
       redrawPreview();
       showToast(`${school.name} selected (+ ${state.currentOffsetDistance}m offset applied)`);
@@ -1770,11 +2485,7 @@
     }
 
     /**
-     * Random 1 to 5 Meter GPS Offset (Jitter) Logic:
-     * distance = 1 + Math.random() * 4 (meters)
-     * angle = Math.random() * 2 * Math.PI
-     * deltaLat = (distance * Math.cos(angle)) / 111320
-     * deltaLon = (distance * Math.sin(angle)) / (111320 * Math.cos(baseLat * Math.PI / 180))
+     * Random 1 to 5 Meter GPS Offset (Jitter) Logic
      */
     function calculateGpsOffset(baseLat, baseLon) {
       const distance = 1 + (Math.random() * 4); // 1 to 5 meters
@@ -1806,9 +2517,6 @@
       }
     }
 
-    /**
-     * "Shuffle 1-5m" Button Click Handler
-     */
     function shuffleGpsJitter() {
       if (state.selectedSchool) {
         applyGpsOffsetToSchool(state.selectedSchool.lat, state.selectedSchool.lng, true);
@@ -1828,7 +2536,7 @@
     }
 
     /**
-     * Load Preferences from localStorage
+     * Load & Save Preferences
      */
     function loadSavedPreferences() {
       try {
@@ -1844,17 +2552,46 @@
           elements.inputNote.value = savedNote;
         }
 
+        const savedProject = localStorage.getItem('photo_stamp_project');
+        if (savedProject !== null && savedProject !== '') {
+          state.projectName = savedProject;
+          elements.inputProject.value = savedProject;
+        }
+
+        const savedMarkaz = localStorage.getItem('photo_stamp_markaz');
+        if (savedMarkaz !== null && savedMarkaz !== '') {
+          state.markaz = savedMarkaz;
+          elements.inputMarkaz.value = savedMarkaz;
+        }
+
         const savedMode = localStorage.getItem('photo_stamp_mode');
         if (savedMode === 'manual' || savedMode === 'auto') {
           setDataMode(savedMode, false);
+        }
+
+        // Conota Settings persistence
+        const savedSettings = localStorage.getItem('photo_stamp_conota_settings');
+        if (savedSettings) {
+          const parsed = JSON.parse(savedSettings);
+          state.settings = Object.assign({}, DEFAULT_CONOTA_SETTINGS, parsed);
+          // Ensure sub-objects merged cleanly
+          state.settings.fieldsEnabled = Object.assign({}, DEFAULT_CONOTA_SETTINGS.fieldsEnabled, parsed.fieldsEnabled || {});
         }
       } catch (e) {
         console.warn('LocalStorage error:', e);
       }
     }
 
+    function saveSettings() {
+      try {
+        localStorage.setItem('photo_stamp_conota_settings', JSON.stringify(state.settings));
+      } catch (e) {
+        console.warn('Error saving settings:', e);
+      }
+    }
+
     /**
-     * Set Initial Date & Time
+     * Date & Time Defaults
      */
     function initDateTimeDefaults() {
       const now = new Date();
@@ -1863,6 +2600,19 @@
 
       elements.inputDate.value = state.date;
       elements.inputTime.value = state.time;
+
+      if (!state.projectName) {
+        state.projectName = "38210008 - GPS DHOK CHAPRI";
+        elements.inputProject.value = state.projectName;
+      }
+      if (!state.markaz) {
+        state.markaz = "JAUHARABAD NORTH (MALE)";
+        elements.inputMarkaz.value = state.markaz;
+      }
+      if (!state.note) {
+        state.note = "School Inspection - PSRP-I Survey";
+        elements.inputNote.value = state.note;
+      }
     }
 
     function formatDate(d) {
@@ -1877,6 +2627,49 @@
       const minutes = String(d.getMinutes()).padStart(2, '0');
       const seconds = String(d.getSeconds()).padStart(2, '0');
       return `${hours}:${minutes}:${seconds}`;
+    }
+
+    /**
+     * Format Conota Date & Time: DD.MM.YYYY 24:00
+     */
+    function formatConotaDateTime(dateStr, timeStr) {
+      let dParts = (dateStr || '').split('-');
+      let formattedDate = dateStr;
+      if (dParts.length === 3) {
+        formattedDate = `${dParts[2]}.${dParts[1]}.${dParts[0]}`;
+      } else if (!dateStr) {
+        const now = new Date();
+        const day = String(now.getDate()).padStart(2, '0');
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const year = now.getFullYear();
+        formattedDate = `${day}.${month}.${year}`;
+      }
+      let t = (timeStr || '').slice(0, 5);
+      if (!t) {
+        const now = new Date();
+        t = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      }
+      return `${formattedDate} ${t}`;
+    }
+
+    /**
+     * Format Conota Coordinates: 32.47287, 72.48893 (with optional WGS84: or Coordinates: labels)
+     */
+    function formatConotaCoordinates(lat, lon, settings) {
+      if (lat === null || lon === null || isNaN(lat) || isNaN(lon)) {
+        return "GPS Unavailable";
+      }
+      const latStr = Number(lat).toFixed(5);
+      const lonStr = Number(lon).toFixed(5);
+      const baseStr = `${latStr}, ${lonStr}`;
+
+      if (settings.coordsPrefix) {
+        return `WGS84: ${baseStr}`;
+      }
+      if (settings.showLabels) {
+        return `Coordinates: ${baseStr}`;
+      }
+      return baseStr;
     }
 
     /**
@@ -1967,9 +2760,7 @@
      * Reverse Geocoding with OpenStreetMap Nominatim
      */
     async function reverseGeocode(lat, lon) {
-      if (!navigator.onLine) {
-        return;
-      }
+      if (!navigator.onLine) return;
 
       try {
         const controller = new AbortController();
@@ -2004,7 +2795,7 @@
     }
 
     /**
-     * File Selection Handler (Supports Gallery & Camera with EXIF auto-orientation)
+     * File Selection Handler
      */
     async function handleFileSelect(event) {
       const file = event.target.files[0];
@@ -2046,7 +2837,6 @@
       state.originalWidth = width;
       state.originalHeight = height;
 
-      // Automatically apply a fresh 1-5m offset if a school is currently selected!
       if (state.selectedSchool) {
         applyGpsOffsetToSchool(state.selectedSchool.lat, state.selectedSchool.lng, false);
       }
@@ -2056,6 +2846,7 @@
       elements.changePhotoBar.style.display = 'flex';
       elements.imageResolutionBadge.textContent = `${width} × ${height} px`;
       elements.canvasStatusBadge.textContent = 'Active';
+      elements.canvasStatusBadge.classList.add('active');
 
       redrawPreview();
       showToast(`Loaded photo: ${width} × ${height} px`);
@@ -2078,49 +2869,38 @@
       ctx.fillStyle = skyGrad;
       ctx.fillRect(0, 0, 1920, 1080);
 
-      // Sun
-      ctx.fillStyle = '#fef08a';
-      ctx.beginPath();
-      ctx.arc(1400, 260, 85, 0, Math.PI * 2);
-      ctx.fill();
+      // Building facade
+      ctx.fillStyle = '#f8fafc';
+      ctx.fillRect(200, 320, 1520, 760);
 
-      // Mountains
+      // School entrance doors and windows
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(860, 680, 200, 400);
+
+      for (let i = 0; i < 5; i++) {
+        ctx.fillStyle = '#38bdf8';
+        ctx.fillRect(320 + (i * 260), 400, 140, 180);
+        ctx.strokeStyle = '#0284c7';
+        ctx.lineWidth = 6;
+        ctx.strokeRect(320 + (i * 260), 400, 140, 180);
+      }
+
+      // School Banner Text
       ctx.fillStyle = '#1e293b';
-      ctx.beginPath();
-      ctx.moveTo(0, 720);
-      ctx.lineTo(350, 440);
-      ctx.lineTo(750, 690);
-      ctx.lineTo(1100, 400);
-      ctx.lineTo(1550, 660);
-      ctx.lineTo(1920, 490);
-      ctx.lineTo(1920, 1080);
-      ctx.lineTo(0, 1080);
-      ctx.closePath();
-      ctx.fill();
-
-      // Ground
-      ctx.fillStyle = '#0f172a';
-      ctx.beginPath();
-      ctx.moveTo(0, 820);
-      ctx.bezierCurveTo(400, 760, 800, 860, 1200, 800);
-      ctx.bezierCurveTo(1500, 740, 1750, 830, 1920, 810);
-      ctx.lineTo(1920, 1080);
-      ctx.lineTo(0, 1080);
-      ctx.closePath();
-      ctx.fill();
-
-      // Text marker
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.22)';
-      ctx.font = 'bold 58px sans-serif';
+      ctx.font = 'bold 44px -apple-system, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('KHUSHAB FIELD TEST SCENE', 960, 540);
+      ctx.fillText('GOVT. PRIMARY SCHOOL - TEHSIL KHUSHAB', 960, 260);
 
       const img = new Image();
       img.onload = () => {
         setImageSource(img, 1920, 1080);
-        if (!state.address) {
-          state.address = "GPS DHOK CHAPRI, JAUHARABAD NORTH, KHUSHAB";
-          elements.inputAddress.value = state.address;
+        if (!state.projectName) {
+          state.projectName = "38210008 - GPS DHOK CHAPRI";
+          elements.inputProject.value = state.projectName;
+        }
+        if (!state.markaz) {
+          state.markaz = "JAUHARABAD NORTH (MALE)";
+          elements.inputMarkaz.value = state.markaz;
         }
         if (!state.note) {
           state.note = "School Inspection - PSRP-I Survey";
@@ -2160,10 +2940,15 @@
       state.time = elements.inputTime.value;
       state.lat = elements.inputLat.value ? parseFloat(elements.inputLat.value) : null;
       state.lon = elements.inputLon.value ? parseFloat(elements.inputLon.value) : null;
-      state.address = elements.inputAddress.value;
+      state.projectName = elements.inputProject.value;
+      state.markaz = elements.inputMarkaz.value;
       state.note = elements.inputNote.value;
+      state.address = elements.inputAddress.value;
 
+      localStorage.setItem('photo_stamp_project', state.projectName);
+      localStorage.setItem('photo_stamp_markaz', state.markaz);
       localStorage.setItem('photo_stamp_note', state.note);
+
       redrawPreview();
     }
 
@@ -2173,15 +2958,44 @@
     }
 
     /**
-     * Format Coordinates into Clean Readable String
+     * Text Wrapping Helper for Canvas Rendering
+     * Splits lengthy strings into graceful wrapped lines within maxWidth
      */
-    function formatCoordinates(lat, lon) {
-      if (lat === null || lon === null || isNaN(lat) || isNaN(lon)) {
-        return "GPS Unavailable";
+    function wrapText(ctx, text, maxWidth) {
+      if (!text) return [];
+      const words = String(text).split(' ');
+      const lines = [];
+      let currentLine = '';
+
+      for (let i = 0; i < words.length; i++) {
+        const word = words[i];
+        const testLine = currentLine ? `${currentLine} ${word}` : word;
+        const testWidth = ctx.measureText(testLine).width;
+
+        if (testWidth > maxWidth && currentLine) {
+          lines.push(currentLine);
+          currentLine = word;
+          // Break words that alone exceed maxWidth
+          if (ctx.measureText(word).width > maxWidth) {
+            let piece = '';
+            for (let ch of word) {
+              if (ctx.measureText(piece + ch).width > maxWidth) {
+                lines.push(piece);
+                piece = ch;
+              } else {
+                piece += ch;
+              }
+            }
+            currentLine = piece;
+          }
+        } else {
+          currentLine = testLine;
+        }
       }
-      const latDir = lat >= 0 ? "N" : "S";
-      const lonDir = lon >= 0 ? "E" : "W";
-      return `${Math.abs(lat).toFixed(6)}° ${latDir}, ${Math.abs(lon).toFixed(6)}° ${lonDir}`;
+      if (currentLine) {
+        lines.push(currentLine);
+      }
+      return lines;
     }
 
     /**
@@ -2202,33 +3016,32 @@
       // Draw original image at 100% full original resolution
       ctx.drawImage(state.imageSource, 0, 0, w, h);
 
-      // Proportional scale factor based on 1200px width reference
       const scale = Math.max(0.65, w / 1200);
-
       const dateText = state.date || formatDate(new Date());
       const timeText = state.time || formatTime(new Date());
-      const coordText = formatCoordinates(state.lat, state.lon);
-      const addressText = state.address || '';
+      const coordText = formatConotaCoordinates(state.lat, state.lon, state.settings);
+      const projectText = state.projectName || state.address || '';
       const noteText = state.note || '';
 
       switch (state.currentTemplate) {
         case 1:
-          drawTemplate1ConotaClassic(ctx, w, h, scale, dateText, timeText, coordText, addressText, noteText);
+          // Conota Compact Overlay Engine with Real-time Fine-Tune settings
+          drawTemplate1ConotaClassic(ctx, w, h);
           break;
         case 2:
-          drawTemplate2FieldBox(ctx, w, h, scale, dateText, timeText, coordText, addressText, noteText);
+          drawTemplate2FieldBox(ctx, w, h, scale, dateText, timeText, coordText, projectText, noteText);
           break;
         case 3:
-          drawTemplate3MinimalCorner(ctx, w, h, scale, dateText, timeText, coordText, addressText, noteText);
+          drawTemplate3MinimalCorner(ctx, w, h, scale, dateText, timeText, coordText, projectText, noteText);
           break;
         case 4:
-          drawTemplate4Split(ctx, w, h, scale, dateText, timeText, coordText, addressText, noteText);
+          drawTemplate4Split(ctx, w, h, scale, dateText, timeText, coordText, projectText, noteText);
           break;
         case 5:
-          drawTemplate5ClassicDigital(ctx, w, h, scale, dateText, timeText, coordText, addressText, noteText);
+          drawTemplate5ClassicDigital(ctx, w, h, scale, dateText, timeText, coordText, projectText, noteText);
           break;
         default:
-          drawTemplate1ConotaClassic(ctx, w, h, scale, dateText, timeText, coordText, addressText, noteText);
+          drawTemplate1ConotaClassic(ctx, w, h);
       }
     }
 
@@ -2237,62 +3050,150 @@
       renderStampOnCanvas(elements.previewCanvas);
     }
 
-    // ==========================================
-    // 5 BUILT-IN WATERMARK TEMPLATES
-    // ==========================================
+    // ========================================================
+    // CONOTA WATERMARK RENDERING ENGINE (TEMPLATE 1 - DEFAULT)
+    // Refined to match exact visual style of image_7 to image_16
+    // ========================================================
+    function drawTemplate1ConotaClassic(ctx, w, h) {
+      const settings = state.settings;
+      const minDim = Math.min(w, h);
 
-    /**
-     * TEMPLATE 1: Conota Classic
-     */
-    function drawTemplate1ConotaClassic(ctx, w, h, scale, dateText, timeText, coords, address, note) {
-      const paddingX = 26 * scale;
-      const paddingY = 20 * scale;
-      const lineHeight = 30 * scale;
-      const fontSizeLarge = 23 * scale;
-      const fontSizeSmall = 17 * scale;
+      // Proportional font sizing: 1 to 10 scaling between 1.2% and 3.5% of minDim
+      const fontRatio = 0.012 + ((settings.fontSizeLevel - 1) / 9) * (0.035 - 0.012);
+      const fontSize = Math.max(12, Math.round(minDim * fontRatio));
+      const lineHeight = Math.round(fontSize * 1.28);
+      const padX = Math.round(minDim * 0.022);
+      const padY = Math.round(minDim * 0.018);
+      const marginX = Math.round(minDim * 0.030);
+      const marginY = Math.round(minDim * 0.030);
+      const maxAllowedWidth = Math.round(w * 0.52); // Strict 45-55% width limit
+      const borderRadius = Math.max(4, Math.round(minDim * 0.007));
 
-      const lines = [
-        `📅 ${dateText}   ⏰ ${timeText}`,
-        `📍 ${coords}`
-      ];
-      if (address) lines.push(`🏫 ${address}`);
-      if (note) lines.push(`📝 ${note}`);
+      ctx.save();
+      ctx.font = `600 ${fontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif`;
 
-      const barHeight = (paddingY * 2) + (lines.length * lineHeight);
-      const barY = h - barHeight;
+      // Gather lines following settings.fieldOrder
+      const rawItems = [];
+      for (const fieldId of settings.fieldOrder) {
+        if (!settings.fieldsEnabled[fieldId]) continue;
 
-      const grad = ctx.createLinearGradient(0, barY, 0, h);
-      grad.addColorStop(0, 'rgba(10, 15, 29, 0.88)');
-      grad.addColorStop(1, 'rgba(5, 8, 16, 0.96)');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, barY, w, barHeight);
+        let lineText = '';
+        switch (fieldId) {
+          case 'project': {
+            const val = state.projectName || state.address || '';
+            if (val) {
+              lineText = (settings.showLabels ? 'Project: ' : '') + val;
+            }
+            break;
+          }
+          case 'markaz': {
+            const val = state.markaz || '';
+            if (val) {
+              lineText = (settings.showLabels ? 'Markaz: ' : '') + val;
+            }
+            break;
+          }
+          case 'notes': {
+            const val = state.note || '';
+            if (val) {
+              lineText = (settings.showLabels ? 'Notes: ' : '') + val;
+            }
+            break;
+          }
+          case 'datetime': {
+            const dt = formatConotaDateTime(state.date, state.time);
+            lineText = (settings.showLabels ? 'Date: ' : '') + dt;
+            break;
+          }
+          case 'coords': {
+            lineText = formatConotaCoordinates(state.lat, state.lon, settings);
+            break;
+          }
+        }
 
-      ctx.fillStyle = '#38bdf8';
-      ctx.fillRect(0, barY, w, 2.5 * scale);
+        if (lineText) {
+          rawItems.push(lineText);
+        }
+      }
 
+      if (rawItems.length === 0) {
+        ctx.restore();
+        return;
+      }
+
+      // Wrap each field strictly within maxAllowedWidth
+      const allWrappedLines = [];
+      const maxTextContentWidth = Math.max(100, maxAllowedWidth - (padX * 2));
+      for (const item of rawItems) {
+        const wrapped = wrapText(ctx, item, maxTextContentWidth);
+        allWrappedLines.push(...wrapped);
+      }
+
+      // Measure max width of actual wrapped lines
+      let maxLineWidth = 0;
+      for (const line of allWrappedLines) {
+        const lw = ctx.measureText(line).width;
+        if (lw > maxLineWidth) maxLineWidth = lw;
+      }
+
+      const boxWidth = Math.min(w - (marginX * 2), Math.round(maxLineWidth + (padX * 2)));
+      const boxHeight = Math.round((allWrappedLines.length * lineHeight) + (padY * 2));
+
+      // Calculate corner position
+      let boxX = marginX;
+      let boxY = h - marginY - boxHeight;
+
+      switch (settings.position) {
+        case 'top-left':
+          boxX = marginX;
+          boxY = marginY;
+          break;
+        case 'top-right':
+          boxX = w - marginX - boxWidth;
+          boxY = marginY;
+          break;
+        case 'bottom-right':
+          boxX = w - marginX - boxWidth;
+          boxY = h - marginY - boxHeight;
+          break;
+        case 'bottom-left':
+        default:
+          boxX = marginX;
+          boxY = h - marginY - boxHeight;
+          break;
+      }
+
+      // Draw dark semi-transparent grey backing container if enabled
+      if (settings.showBg) {
+        const opacities = [0.85, 0.68, 0.50, 0.36, 0.22];
+        const alpha = opacities[settings.bgOpacityLevel - 1] ?? 0.50;
+        ctx.fillStyle = `rgba(20, 20, 22, ${alpha})`;
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+        ctx.lineWidth = Math.max(1, Math.round(minDim * 0.001));
+
+        drawRoundedRect(ctx, boxX, boxY, boxWidth, boxHeight, borderRadius);
+        ctx.fill();
+        ctx.stroke();
+      }
+
+      // Render crisp text
+      ctx.fillStyle = settings.fontColor || '#ffffff';
       ctx.textAlign = 'left';
       ctx.textBaseline = 'top';
 
-      lines.forEach((line, index) => {
-        const lineY = barY + paddingY + (index * lineHeight);
-        if (index === 0) {
-          ctx.font = `bold ${fontSizeLarge}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
-          ctx.fillStyle = '#ffffff';
-        } else if (index === lines.length - 1 && note) {
-          ctx.font = `italic 600 ${fontSizeSmall}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
-          ctx.fillStyle = '#38bdf8';
-        } else {
-          ctx.font = `500 ${fontSizeSmall}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
-          ctx.fillStyle = '#f1f5f9';
-        }
+      // Subtle drop shadow for crisp readability
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
+      ctx.shadowBlur = Math.round(fontSize * 0.22);
+      ctx.shadowOffsetX = 1;
+      ctx.shadowOffsetY = 1;
 
-        const maxTextWidth = w - (paddingX * 2);
-        let displayText = line;
-        while (ctx.measureText(displayText).width > maxTextWidth && displayText.length > 10) {
-          displayText = displayText.slice(0, -4) + '...';
-        }
-        ctx.fillText(displayText, paddingX, lineY);
-      });
+      for (let i = 0; i < allWrappedLines.length; i++) {
+        const line = allWrappedLines[i];
+        const textY = boxY + padY + (i * lineHeight);
+        ctx.fillText(line, boxX + padX, textY);
+      }
+
+      ctx.restore();
     }
 
     /**
@@ -2528,7 +3429,184 @@
     }
 
     // ==========================================
-    // EXPORT & SAVE / SHARE
+    // CONOTA SETTINGS UI CONTROLLER & MODAL
+    // ==========================================
+
+    function openSettingsModal() {
+      syncSettingsToUI();
+      renderOrderList();
+      elements.settingsModal.classList.add('open');
+    }
+
+    function closeSettingsModal() {
+      elements.settingsModal.classList.remove('open');
+    }
+
+    function syncSettingsToUI() {
+      const s = state.settings;
+      elements.settingShowLabels.checked = !!s.showLabels;
+      elements.settingCoordsPrefix.checked = !!s.coordsPrefix;
+      elements.settingFontSize.value = s.fontSizeLevel;
+      elements.fontSizeBadge.textContent = `Level ${s.fontSizeLevel} (${(0.012 + ((s.fontSizeLevel - 1) / 9) * 0.023 * 100).toFixed(1)}%)`;
+
+      elements.settingShowBg.checked = !!s.showBg;
+      elements.opacityControlWrap.style.display = s.showBg ? 'flex' : 'none';
+      elements.settingBgOpacity.value = s.bgOpacityLevel;
+      const opacityNames = ['1: 85% Dark', '2: 68%', '3: 50% Conota', '4: 36%', '5: 22% Light'];
+      elements.opacityBadge.textContent = opacityNames[s.bgOpacityLevel - 1] || '3 of 5';
+
+      elements.settingQuality.value = s.jpegQuality;
+      elements.qualityBadge.textContent = `${s.jpegQuality}% (${s.jpegQuality >= 90 ? 'High Quality' : 'Compressed'})`;
+
+      elements.settingCustomColor.value = s.fontColor;
+      elements.fontColorText.textContent = s.fontColor;
+
+      // Update position buttons
+      document.querySelectorAll('.position-btn').forEach(btn => {
+        if (btn.getAttribute('data-pos') === s.position) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+
+      // Update color preset pills
+      document.querySelectorAll('.color-pill').forEach(pill => {
+        if (pill.getAttribute('data-color') === s.fontColor) {
+          pill.classList.add('active');
+        } else {
+          pill.classList.remove('active');
+        }
+      });
+
+      // Update quick bar in main UI
+      const posLabels = {
+        'bottom-left': 'Bottom Left',
+        'bottom-right': 'Bottom Right',
+        'top-left': 'Top Left',
+        'top-right': 'Top Right'
+      };
+      elements.quickBarPos.textContent = posLabels[s.position] || 'Bottom Left';
+      elements.quickBarOpacity.textContent = s.showBg ? `Opacity ${s.bgOpacityLevel}/5` : 'No Backing';
+    }
+
+    function updateSettingsFromUI() {
+      const s = state.settings;
+      s.showLabels = elements.settingShowLabels.checked;
+      s.coordsPrefix = elements.settingCoordsPrefix.checked;
+      s.fontSizeLevel = parseInt(elements.settingFontSize.value, 10);
+      s.showBg = elements.settingShowBg.checked;
+      s.bgOpacityLevel = parseInt(elements.settingBgOpacity.value, 10);
+      s.jpegQuality = parseInt(elements.settingQuality.value, 10);
+
+      elements.opacityControlWrap.style.display = s.showBg ? 'flex' : 'none';
+      elements.fontSizeBadge.textContent = `Level ${s.fontSizeLevel} (${(0.012 + ((s.fontSizeLevel - 1) / 9) * 0.023 * 100).toFixed(1)}%)`;
+      const opacityNames = ['1: 85% Dark', '2: 68%', '3: 50% Conota', '4: 36%', '5: 22% Light'];
+      elements.opacityBadge.textContent = opacityNames[s.bgOpacityLevel - 1] || '3 of 5';
+      elements.qualityBadge.textContent = `${s.jpegQuality}% (${s.jpegQuality >= 90 ? 'High Quality' : 'Compressed'})`;
+
+      const posLabels = {
+        'bottom-left': 'Bottom Left',
+        'bottom-right': 'Bottom Right',
+        'top-left': 'Top Left',
+        'top-right': 'Top Right'
+      };
+      elements.quickBarPos.textContent = posLabels[s.position] || 'Bottom Left';
+      elements.quickBarOpacity.textContent = s.showBg ? `Opacity ${s.bgOpacityLevel}/5` : 'No Backing';
+
+      saveSettings();
+      redrawPreview();
+    }
+
+    function setPosition(pos) {
+      state.settings.position = pos;
+      syncSettingsToUI();
+      saveSettings();
+      redrawPreview();
+    }
+
+    function setFontColor(color) {
+      state.settings.fontColor = color;
+      syncSettingsToUI();
+      saveSettings();
+      redrawPreview();
+    }
+
+    function resetToConotaDefaults() {
+      state.settings = JSON.parse(JSON.stringify(DEFAULT_CONOTA_SETTINGS));
+      syncSettingsToUI();
+      renderOrderList();
+      saveSettings();
+      redrawPreview();
+      showToast('Settings reset to Conota defaults');
+    }
+
+    /**
+     * Render Reorderable Field List with Up/Down buttons & Checkboxes
+     */
+    function renderOrderList() {
+      const labels = {
+        project: 'Project / School Name',
+        markaz: 'Markaz / Sub-area',
+        notes: 'Custom Notes',
+        datetime: 'Date & Time (DD.MM.YYYY)',
+        coords: 'GPS Coordinates'
+      };
+
+      const container = elements.fieldOrderContainer;
+      container.innerHTML = '';
+
+      state.settings.fieldOrder.forEach((fieldId, index) => {
+        const isFirst = index === 0;
+        const isLast = index === state.settings.fieldOrder.length - 1;
+        const isChecked = state.settings.fieldsEnabled[fieldId];
+
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'order-item';
+        itemDiv.innerHTML = `
+          <div class="order-item-left">
+            <input type="checkbox" class="order-item-checkbox" id="chk_field_${fieldId}" ${isChecked ? 'checked' : ''} onchange="toggleFieldEnabled('${fieldId}', this.checked)">
+            <label for="chk_field_${fieldId}" class="order-item-title" style="cursor: pointer;">${labels[fieldId] || fieldId}</label>
+          </div>
+          <div class="order-item-actions">
+            <button type="button" class="btn-order-arrow" ${isFirst ? 'disabled' : ''} onclick="moveFieldUp(${index})" title="Move Up">▲</button>
+            <button type="button" class="btn-order-arrow" ${isLast ? 'disabled' : ''} onclick="moveFieldDown(${index})" title="Move Down">▼</button>
+          </div>
+        `;
+        container.appendChild(itemDiv);
+      });
+    }
+
+    function toggleFieldEnabled(fieldId, enabled) {
+      state.settings.fieldsEnabled[fieldId] = enabled;
+      saveSettings();
+      redrawPreview();
+    }
+
+    function moveFieldUp(index) {
+      if (index <= 0) return;
+      const arr = state.settings.fieldOrder;
+      const temp = arr[index - 1];
+      arr[index - 1] = arr[index];
+      arr[index] = temp;
+      saveSettings();
+      renderOrderList();
+      redrawPreview();
+    }
+
+    function moveFieldDown(index) {
+      const arr = state.settings.fieldOrder;
+      if (index >= arr.length - 1) return;
+      const temp = arr[index + 1];
+      arr[index + 1] = arr[index];
+      arr[index] = temp;
+      saveSettings();
+      renderOrderList();
+      redrawPreview();
+    }
+
+    // ==========================================
+    // EXPORT & SAVE / SHARE (WITH QUALITY SLIDER)
     // ==========================================
 
     function saveStampedPhoto() {
@@ -2538,12 +3616,13 @@
         return;
       }
 
+      const qualityRatio = (state.settings.jpegQuality || 95) / 100;
       elements.btnSave.disabled = true;
       elements.btnSave.innerHTML = `
         <svg class="icon" style="animation: pulse 1s infinite;" viewBox="0 0 24 24">
           <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>
         </svg>
-        Exporting at 100% Quality...
+        Exporting at ${state.settings.jpegQuality}% Quality...
       `;
 
       setTimeout(() => {
@@ -2572,9 +3651,9 @@
 
             setTimeout(() => URL.revokeObjectURL(url), 6000);
 
-            showToast(`Saved ${filename} to gallery!`);
+            showToast(`Saved ${filename} (${(blob.size / 1024 / 1024).toFixed(2)} MB) to gallery!`);
             resetSaveButton();
-          }, 'image/jpeg', 0.95);
+          }, 'image/jpeg', qualityRatio);
         } catch (err) {
           console.error('Export error:', err);
           showToast('Failed to export photo');
@@ -2600,6 +3679,7 @@
       }
 
       try {
+        const qualityRatio = (state.settings.jpegQuality || 95) / 100;
         const exportCanvas = document.createElement('canvas');
         renderStampOnCanvas(exportCanvas);
 
@@ -2615,12 +3695,12 @@
             await navigator.share({
               files: [file],
               title: 'Stamped Photo',
-              text: `Stamped photo with GPS coordinates.`
+              text: `Stamped photo with Conota GPS coordinates.`
             });
           } else {
             saveStampedPhoto();
           }
-        }, 'image/jpeg', 0.95);
+        }, 'image/jpeg', qualityRatio);
       } catch (e) {
         if (e.name !== 'AbortError') {
           console.warn('Share cancelled or failed:', e);
