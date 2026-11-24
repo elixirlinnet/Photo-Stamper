@@ -2158,21 +2158,21 @@
 
     // Default Conota Settings Specification
     const DEFAULT_CONOTA_SETTINGS = {
-      showLabels: true,          // Watermark Captions (Project:, Markaz:, Notes:)
-      coordsPrefix: false,       // WGS84: prefix
+      showLabels: false,         // No headings/labels by default
+      coordsPrefix: false,       // No WGS84: prefix
       position: 'bottom-left',   // 'bottom-left', 'bottom-right', 'top-left', 'top-right'
       fontSizeLevel: 5,          // 1 to 10 (scales font from 1.2% to 3.5% of Math.min(w,h))
       fontColor: '#ffffff',      // Hex color
       showBg: true,              // Dark grey backing container
       bgOpacityLevel: 3,         // 1: 85%, 2: 68%, 3: 50%, 4: 36%, 5: 22%
       jpegQuality: 95,           // 50 to 100
-      fieldOrder: ['project', 'markaz', 'notes', 'datetime', 'coords'],
+      fieldOrder: ['markaz', 'project', 'datetime', 'coords', 'notes'],
       fieldsEnabled: {
-        project: true,
         markaz: true,
-        notes: true,
+        project: true,
         datetime: true,
-        coords: true
+        coords: true,
+        notes: false
       }
     };
 
@@ -2569,13 +2569,14 @@
           setDataMode(savedMode, false);
         }
 
-        // Conota Settings persistence
-        const savedSettings = localStorage.getItem('photo_stamp_conota_settings');
+        // Conota Settings persistence (v2 layout: Markaz, School, DD/MM/YYYY AM/PM, Location, no headings)
+        const savedSettings = localStorage.getItem('photo_stamp_conota_settings_v2');
         if (savedSettings) {
           const parsed = JSON.parse(savedSettings);
           state.settings = Object.assign({}, DEFAULT_CONOTA_SETTINGS, parsed);
-          // Ensure sub-objects merged cleanly
           state.settings.fieldsEnabled = Object.assign({}, DEFAULT_CONOTA_SETTINGS.fieldsEnabled, parsed.fieldsEnabled || {});
+        } else {
+          state.settings = JSON.parse(JSON.stringify(DEFAULT_CONOTA_SETTINGS));
         }
       } catch (e) {
         console.warn('LocalStorage error:', e);
@@ -2584,7 +2585,7 @@
 
     function saveSettings() {
       try {
-        localStorage.setItem('photo_stamp_conota_settings', JSON.stringify(state.settings));
+        localStorage.setItem('photo_stamp_conota_settings_v2', JSON.stringify(state.settings));
       } catch (e) {
         console.warn('Error saving settings:', e);
       }
@@ -2610,7 +2611,7 @@
         elements.inputMarkaz.value = state.markaz;
       }
       if (!state.note) {
-        state.note = "School Inspection - PSRP-I Survey";
+        state.note = "";
         elements.inputNote.value = state.note;
       }
     }
@@ -2633,23 +2634,36 @@
      * Format Conota Date & Time: DD.MM.YYYY 24:00
      */
     function formatConotaDateTime(dateStr, timeStr) {
-      let dParts = (dateStr || '').split('-');
-      let formattedDate = dateStr;
-      if (dParts.length === 3) {
-        formattedDate = `${dParts[2]}.${dParts[1]}.${dParts[0]}`;
-      } else if (!dateStr) {
+      let day, month, year;
+      if (dateStr && dateStr.includes('-')) {
+        const parts = dateStr.split('-');
+        year = parts[0];
+        month = parts[1].padStart(2, '0');
+        day = parts[2].padStart(2, '0');
+      } else {
         const now = new Date();
-        const day = String(now.getDate()).padStart(2, '0');
-        const month = String(now.getMonth() + 1).padStart(2, '0');
-        const year = now.getFullYear();
-        formattedDate = `${day}.${month}.${year}`;
+        day = String(now.getDate()).padStart(2, '0');
+        month = String(now.getMonth() + 1).padStart(2, '0');
+        year = String(now.getFullYear());
       }
-      let t = (timeStr || '').slice(0, 5);
-      if (!t) {
+
+      let hours = 0, minutes = 0;
+      if (timeStr && timeStr.includes(':')) {
+        const tParts = timeStr.split(':');
+        hours = parseInt(tParts[0], 10) || 0;
+        minutes = parseInt(tParts[1], 10) || 0;
+      } else {
         const now = new Date();
-        t = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        hours = now.getHours();
+        minutes = now.getMinutes();
       }
-      return `${formattedDate} ${t}`;
+
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      const hours12 = hours % 12 || 12;
+      const hoursFormatted = String(hours12).padStart(2, '0');
+      const minutesFormatted = String(minutes).padStart(2, '0');
+
+      return `${day}/${month}/${year} ${hoursFormatted}:${minutesFormatted} ${ampm}`;
     }
 
     /**
@@ -2903,7 +2917,7 @@
           elements.inputMarkaz.value = state.markaz;
         }
         if (!state.note) {
-          state.note = "School Inspection - PSRP-I Survey";
+          state.note = "";
           elements.inputNote.value = state.note;
         }
         redrawPreview();
@@ -3546,11 +3560,11 @@
      */
     function renderOrderList() {
       const labels = {
-        project: 'Project / School Name',
-        markaz: 'Markaz / Sub-area',
-        notes: 'Custom Notes',
-        datetime: 'Date & Time (DD.MM.YYYY)',
-        coords: 'GPS Coordinates'
+        markaz: 'Markaz Name',
+        project: 'School Name (from 213 Schools)',
+        datetime: 'Date & Time (DD/MM/YYYY 00:00 AM/PM)',
+        coords: 'Location (32.00000, 72.00000)',
+        notes: 'Custom Notes (Optional)'
       };
 
       const container = elements.fieldOrderContainer;
