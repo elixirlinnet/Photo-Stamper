@@ -1654,7 +1654,7 @@
         <div class="input-group full-width">
           <label for="inputMarkaz">
             <span>Markaz Name</span>
-            <span style="font-size: 0.70rem; color: var(--text-muted);">From 217 Schools or write custom (optional)</span>
+            <span class="schools-count-inline" style="font-size: 0.70rem; color: var(--text-muted);">From 217 Schools or write custom (optional)</span>
           </label>
           <input type="text" id="inputMarkaz" placeholder="e.g. Markaz Katha Saghral East (or leave blank)" oninput="onDataChanged()">
         </div>
@@ -1663,7 +1663,7 @@
         <div class="input-group full-width">
           <label for="inputProject">
             <span>Name / School Name</span>
-            <span style="font-size: 0.70rem; color: var(--text-muted);">From 217 Schools or write custom (optional)</span>
+            <span class="schools-count-inline" style="font-size: 0.70rem; color: var(--text-muted);">From 217 Schools or write custom (optional)</span>
           </label>
           <input type="text" id="inputProject" placeholder="e.g. Hafiz Muhammad Asim or School Name (or leave blank)" oninput="onDataChanged()">
         </div>
@@ -1905,37 +1905,55 @@
 
     function updateSchoolsCountBadge(count) {
       elements.schoolsCountText.textContent = `${count} Schools`;
+      document.querySelectorAll('.schools-count-inline').forEach(el => {
+        el.textContent = `From ${count} Schools or write custom (optional)`;
+      });
     }
 
     /**
-     * Fetch & Cache School Data from GitHub Pages
-     * https://elixirlinnet.github.io/Schools-Mapping-System-by-ASiM/schools.csv
+     * Fetch & Cache School Data directly from this repository's schools.csv
+     * (Automatically picks up any updates pushed to schools.csv without editing index.html)
      */
     async function syncSchoolsData(showFeedback = true) {
       elements.btnSyncSchools.classList.add('spinning');
 
+      const cacheBuster = `t=${Date.now()}`;
+      const candidateUrls = [
+        `./schools.csv?${cacheBuster}`,
+        `https://elixirlinnet.github.io/Photo-Stamper/schools.csv?${cacheBuster}`
+      ];
+
       try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 8000);
+        let csvText = null;
+        for (const url of candidateUrls) {
+          try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 8000);
+            const res = await fetch(url, { signal: controller.signal, cache: 'no-store' });
+            clearTimeout(timeoutId);
+            if (res.ok) {
+              csvText = await res.text();
+              break;
+            }
+          } catch (e) {
+            // Try next fallback URL
+          }
+        }
 
-        const url = 'https://elixirlinnet.github.io/Schools-Mapping-System-by-ASiM/schools.csv';
-        const res = await fetch(url, { signal: controller.signal, cache: 'no-cache' });
-        clearTimeout(timeoutId);
+        if (!csvText) throw new Error('Unable to fetch schools.csv');
 
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const csvText = await res.text();
         const parsed = parseSchoolsCsv(csvText);
 
         if (parsed.length > 0) {
           state.schoolsList = parsed;
           localStorage.setItem('photo_stamp_schools_khushab', JSON.stringify(parsed));
           updateSchoolsCountBadge(parsed.length);
-          if (showFeedback) showToast(`Synced ${parsed.length} Khushab schools from GitHub!`);
+          if (showFeedback) showToast(`Synced ${parsed.length} Khushab schools from schools.csv!`);
         } else {
           throw new Error('No Tehsil Khushab schools parsed from CSV');
         }
       } catch (err) {
-        console.warn('Sync from GitHub failed, falling back to local cached dataset:', err);
+        console.warn('Sync from schools.csv failed, falling back to cached dataset:', err);
         if (showFeedback) {
           showToast(`Using ${state.schoolsList.length} cached Khushab schools (Offline)`);
         }
@@ -1945,13 +1963,40 @@
     }
 
     /**
-     * Parse CSV and filter strictly for TEHSIL KHUSHAB
+     * Parse a single CSV line safely, respecting double-quoted fields containing commas
+     */
+    function parseCsvLine(line) {
+      const result = [];
+      let current = '';
+      let inQuotes = false;
+      for (let i = 0; i < line.length; i++) {
+        const ch = line[i];
+        if (ch === '"') {
+          if (inQuotes && line[i + 1] === '"') {
+            current += '"';
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (ch === ',' && !inQuotes) {
+          result.push(current);
+          current = '';
+        } else {
+          current += ch;
+        }
+      }
+      result.push(current);
+      return result;
+    }
+
+    /**
+     * Parse CSV and filter strictly for TEHSIL KHUSHAB schools with valid coordinates
      */
     function parseSchoolsCsv(csvText) {
       const lines = csvText.split(/\r?\n/).filter(l => l.trim().length > 0);
       const schools = [];
       for (let i = 1; i < lines.length; i++) {
-        const parts = lines[i].split(',');
+        const parts = parseCsvLine(lines[i]);
         if (parts.length >= 8) {
           const tehsil = parts[0].trim().toUpperCase();
           if (tehsil === 'KHUSHAB') {
